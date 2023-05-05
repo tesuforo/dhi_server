@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const URI = "mongodb://localhost/mern-crud-test";
+const URI = "mongodb://0.0.0.0:27017/dhi";
 
 export const connectDB = async () => {
   try {
