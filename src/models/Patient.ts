@@ -6,7 +6,7 @@ import { AuthInstance as mongoose } from "..";
 import { Document } from "mongoose";
 
 export interface IPaciente extends Document {
-  tipoDocumento: "CC" | "CE";
+  tipoDocumento: { code: string; name: string };
   documento: string;
   nombre: string;
   apellido: string;
@@ -15,19 +15,21 @@ export interface IPaciente extends Document {
   genero: "Masculino" | "Femenino" | "Otro";
   email: string;
   telefono: string;
-  ciudad: string;
-  distrito: string;
   pais: string;
-  zonaResidencial: string;
-  eps: string;
-  estadoCivil: string;
+  registrado: true | false;
+  distrito?: string;
+  ciudad?: string;
+  zonaResidencial?: string;
+  eps?: string;
+  estadoCivil?: string;
+  estrato?: 1 | 2 | 3 | 4 | 5 | 6;
   ocupacion?: string;
   acudiente?: string;
   fechaRegistro?: Date;
 }
 
 const pacienteSchema = new mongoose.Schema({
-  tipoDocumento: { type: String, enum: ["CC", "CE"], required: true },
+  tipoDocumento: { type: Object, required: true },
   documento: { type: String, required: true, unique: true },
   nombre: {
     type: String,
@@ -59,29 +61,38 @@ const pacienteSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  ciudad: {
-    type: String,
-    required: true,
-  },
-  distrito: {
-    type: String,
-    required: true,
-  },
   pais: {
     type: String,
     required: true,
   },
+  registrado: {
+    type: Boolean,
+    required: true,
+  },
+  distrito: {
+    type: String,
+    required: false,
+  },
+  ciudad: {
+    type: String,
+    required: false,
+  },
   zonaResidencial: {
     type: String,
-    required: true,
+    required: false,
   },
   eps: {
     type: String,
-    required: true,
+    required: false,
   },
   estadoCivil: {
     type: String,
-    required: true,
+    required: false,
+  },
+  estrato: {
+    type: String,
+    enum: [1, 2, 3, 4, 5, 6],
+    required: false,
   },
   ocupacion: {
     type: String,
@@ -94,6 +105,13 @@ const pacienteSchema = new mongoose.Schema({
   fechaRegistro: {
     type: Date,
     default: Date.now,
+  },
+});
+
+pacienteSchema.set("toJSON", {
+  transform: (_document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString();
+    delete returnedObject.__v;
   },
 });
 

@@ -7,13 +7,15 @@ import { Document } from "mongoose";
 
 export interface IDoctor extends Document {
   nombre: string;
+  orden: string;
   especialidad: string;
   experiencia: number;
   email: string;
   telefono: string;
   direccion: string;
   consultorio: string;
-  horario: string;
+  horario: { day: string; start: Date; end: Date }[];
+  color: string;
 }
 
 const doctorSchema = new mongoose.Schema({
@@ -47,6 +49,10 @@ const doctorSchema = new mongoose.Schema({
     required: true,
   },
   horario: {
+    type: Object,
+    required: true,
+  },
+  color: {
     type: String,
     required: true,
   },
@@ -58,7 +64,6 @@ doctorSchema.set("toJSON", {
     delete returnedObject.__v;
   },
 });
-
 
 const Doctor = mongoose.model("Doctor", doctorSchema);
 

@@ -48,22 +48,19 @@ app.use(Paths.Base, UserRouter);
 app.use(Paths.Base, AppointmentRouter);
 
 // Add error handler
-app.use((
-  err: Error,
-  _: Request,
-  res: Response,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  next: NextFunction,
-) => {
+app.use((err: Error, req: Request, res: Response) => {
   if (EnvVars.NodeEnv !== NodeEnvs.Test) {
     logger.err(err, true);
   }
+  
   let status = HttpStatusCodes.BAD_REQUEST;
   if (err instanceof RouteError) {
     status = err.status;
   }
+  
   return res.status(status).json({ error: err.message });
 });
+
 
 
 // ** Front-End Content ** //
