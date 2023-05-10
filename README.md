@@ -1,8 +1,3 @@
-## About
-
-This project was created with [express-generator-typescript](https://github.com/seanpmaxwell/express-generator-typescript).
-
-
 ## Available Scripts
 
 ### `npm run dev`
@@ -38,6 +33,38 @@ Run the production build (Must be built first).
 Run production build with a different env file.
 
 
-## Additional Notes
+# appointment-scheduling-backend
 
-- If `npm run dev` gives you issues with bcrypt on MacOS you may need to run: `npm rebuild bcrypt --build-from-source`. 
+This is a project for appointment scheduling backend.
+
+## Project Details
+
+- Name: appointment-scheduling-backend
+- Version: 0.0.0
+
+### Scripts
+
+The following scripts can be executed using "npm run":
+
+- `build`: Compiles the code using `ts-node`
+- `lint`: Runs eslint on the files inside the "src" folder
+- `lint:tests`: Runs eslint on the files inside the "spec" folder
+- `start`: Starts the server in development mode using nodemon
+- `dev`: Starts the server using nodemon
+- `test`: Starts the server for testing using nodemon and the nodemon configuration for testing
+- `test:no-reloading`: Starts the server for testing without reloading using ts-node and tsconfig-paths
+
+### Nodemon Configuration
+
+The nodemon configuration is as follows:
+
+- Watch: looks for changes inside the "src" folder
+- Ignore: ignores the "public" folder inside "src"
+- Execute: runs the "src/index.ts" using ts-node and tsconfig-paths
+
+### Module Aliases
+
+The project uses an alias for modules to simplify imports:
+
+- Alias: "@src"
+- Path: "dist"
