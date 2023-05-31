@@ -5,116 +5,70 @@
 import { AuthInstance as mongoose } from "..";
 import { Document } from "mongoose";
 
-export interface IPaciente extends Document {
-  tipoDocumento: { code: string; name: string };
-  documento: string;
-  nombre: string;
-  apellido: string;
-  fechaNacimiento: Date;
-  edad: number;
-  genero: "Masculino" | "Femenino" | "Otro";
+export interface IPatient extends Document {
+  documentType: { code: string; name: string };
+  documentNumber: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: Date;
+  age: number;
+  gender: "Male" | "Female" | "Other";
   email: string;
-  telefono: string;
-  pais: string;
-  registrado: true | false;
-  distrito?: string;
-  ciudad?: string;
-  zonaResidencial?: string;
+  phone: string;
+  country: string;
+  registered: true | false;
+  district?: string;
+  city?: string;
+  residentialZone?: string;
   eps?: string;
-  estadoCivil?: string;
-  estrato?: 1 | 2 | 3 | 4 | 5 | 6;
-  ocupacion?: string;
-  acudiente?: string;
-  fechaRegistro?: Date;
+  maritalStatus?: string;
+  stratum?: 1 | 2 | 3 | 4 | 5 | 6;
+  occupation?: string;
+  guardian?: string;
+  registrationDate?: Date;
 }
 
-const pacienteSchema = new mongoose.Schema({
-  tipoDocumento: { type: Object, required: true },
-  documento: { type: String, required: true, unique: true },
-  nombre: {
+const patientSchema = new mongoose.Schema({
+  documentType: {
+    code: { type: String, required: true },
+    name: { type: String, required: true }
+  },
+  documentNumber: { type: String, required: true },
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  dateOfBirth: { type: Date, required: true },
+  age: { type: Number, required: true },
+  gender: {
     type: String,
-    required: true,
+    enum: ['Male', 'Female', 'Other'],
+    required: true
   },
-  apellido: {
-    type: String,
-    required: true,
-  },
-  fechaNacimiento: {
-    type: Date,
-    required: true,
-  },
-  edad: {
-    type: Number,
-    required: true,
-  },
-  genero: {
-    type: String,
-    enum: ["Masculino", "Femenino", "Otro"],
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  telefono: {
-    type: String,
-    required: true,
-  },
-  pais: {
-    type: String,
-    required: true,
-  },
-  registrado: {
-    type: Boolean,
-    required: true,
-  },
-  distrito: {
-    type: String,
-    required: false,
-  },
-  ciudad: {
-    type: String,
-    required: false,
-  },
-  zonaResidencial: {
-    type: String,
-    required: false,
-  },
-  eps: {
-    type: String,
-    required: false,
-  },
-  estadoCivil: {
-    type: String,
-    required: false,
-  },
-  estrato: {
-    type: String,
-    enum: [1, 2, 3, 4, 5, 6],
-    required: false,
-  },
-  ocupacion: {
-    type: String,
-    required: false,
-  },
-  acudiente: {
-    type: String,
-    required: false,
-  },
-  fechaRegistro: {
-    type: Date,
-    default: Date.now,
-  },
+  email: { type: String, required: true },
+  phone: { type: String, required: true },
+  country: { type: String, required: true },
+  registered: { type: Boolean, required: true },
+  district: { type: String },
+  city: { type: String },
+  residentialZone: { type: String },
+  eps: { type: String },
+  maritalStatus: { type: String },
+  stratum: { type: Number, enum: [1, 2, 3, 4, 5, 6] },
+  occupation: { type: String },
+  guardian: { type: String },
+  registrationDate: { type: Date }
 });
 
-pacienteSchema.set("toJSON", {
+
+patientSchema.set("toJSON", {
   transform: (_document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject.__v;
   },
 });
 
-const Patient = mongoose.model("Patients", pacienteSchema);
+export const Patient = mongoose.model<IPatient>(
+  "Patients",
+  patientSchema
+);
 
-module.exports = Patient;
+

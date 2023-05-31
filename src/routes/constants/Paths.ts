@@ -17,6 +17,23 @@ const Paths = {
   Appointments: {
     Base: '/appointments',
     Get: '/all',
+    Id: '/:id',
+    Add: '/add',
+    Update: '/update',
+    Delete: '/delete/:id',
+  },
+  Doctor: {
+    Base: '/doctor',
+    Get: '/all',
+    Id: '/:id',
+    Add: '/add',
+    Update: '/update',
+    Delete: '/delete/:id',
+  },
+  Patient: {
+    Base: '/patient',
+    Get: '/all',
+    Id: '/:id',
     Add: '/add',
     Update: '/update',
     Delete: '/delete/:id',

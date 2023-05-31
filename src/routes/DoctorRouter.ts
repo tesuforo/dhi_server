@@ -3,9 +3,9 @@ import express, { Router } from "express";
 import jetValidator from "jet-validator";
 
 import Paths from "./constants/Paths";
-import AppointRoutes from "../controller/AppointmentController";
+import DoctorRoutes from "../controller/DoctorController";
 
-const validateAppointment = (
+const validateDoctor = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
@@ -31,30 +31,30 @@ const router = Router(),
   validate = jetValidator();
 
 // ** Add AppointRouter ** //
-const appointRouter = Router();
+const doctorRouter = Router();
 
 // Get all appoints
-appointRouter.get(Paths.Appointments.Get, AppointRoutes.getAll);
+doctorRouter.get(Paths.Doctor.Get, DoctorRoutes.getAll);
 
 // Add one appoint
-appointRouter.post(Paths.Appointments.Add, AppointRoutes.add);
+doctorRouter.post(Paths.Doctor.Add, DoctorRoutes.add);
 
 // Update one appoint
-appointRouter.put(
-  Paths.Appointments.Update,
-  validateAppointment,
-  AppointRoutes.update
+doctorRouter.put(
+  Paths.Doctor.Update,
+  validateDoctor,
+  DoctorRoutes.update
 );
 
 // Delete one appoint
-appointRouter.delete(
-  Paths.Appointments.Delete,
+doctorRouter.delete(
+  Paths.Doctor.Delete,
   validate(["id", "string", "params"]),
-  AppointRoutes.delete
+  DoctorRoutes.delete
 );
 
 // Add AppointRouter
-router.use(Paths.Appointments.Base, appointRouter);
+router.use(Paths.Doctor.Base, doctorRouter);
 
 // **** Export default **** //
 

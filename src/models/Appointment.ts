@@ -13,6 +13,7 @@ export interface IAppointment extends Document {
   doctorId: Schema.Types.ObjectId;
   servicesId: Schema.Types.ObjectId[];
   reason: string;
+  status: "Pendiente" | "Confirmada" | "Cancelada";
 }
 
 const appointmentSchema = new mongoose.Schema(
@@ -26,6 +27,12 @@ const appointmentSchema = new mongoose.Schema(
       { type: Schema.Types.ObjectId, required: true, ref: "Services" },
     ],
     reason: { type: String, required: true, trim: true },
+    status: {
+      type: String,
+      enum: ["Pendiente", "Confirmada", "Cancelada"],
+      default: "Pendiente",
+      required: true,
+    },
   },
   { timestamps: true }
 );

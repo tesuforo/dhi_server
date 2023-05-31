@@ -59,7 +59,8 @@ doctorSchema.set("toJSON", {
   },
 });
 
+export const Doctor = mongoose.model<IDoctor>(
+  "Doctors",
+  doctorSchema
+);
 
-const Doctor = mongoose.model("Doctor", doctorSchema);
-
-module.exports = Doctor;
