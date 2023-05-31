@@ -13,6 +13,8 @@ import 'express-async-errors';
 
 import UserRouter from '@src/routes/UserRouter';
 import AppointmentRouter from '@src/routes/AppointmentRouter';
+import DoctorRouter from '@src/routes/DoctorRouter';
+import PatientRouter from '@src/routes/PatientRouter';
 import Paths from '@src/routes/constants/Paths';
 
 import EnvVars from '@src/constants/EnvVars';
@@ -46,6 +48,8 @@ if (EnvVars.NodeEnv === NodeEnvs.Production) {
 // Add APIs, must be after middleware
 app.use(Paths.Base, UserRouter);
 app.use(Paths.Base, AppointmentRouter);
+app.use(Paths.Base, DoctorRouter);
+app.use(Paths.Base, PatientRouter);
 
 // Add error handler
 app.use((err: Error, req: Request, res: Response) => {
