@@ -18,6 +18,7 @@ export interface IDoctor extends Document {
   color: string;
 }
 
+
 const doctorSchema = new mongoose.Schema({
   nombre: {
     type: String,
