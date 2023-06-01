@@ -12,7 +12,7 @@ import { IAppointmentCreateRequest } from "@src/models/AppointmentRequest";
 
 export const APPOINTMENT_NOT_FOUND_ERROR = "Appointment not found";
 export const DOCTOR_NOT_FOUND_ERROR = "Doctor not found";
-export const PATIENT_NOT_FOUND_ERROR = "Doctor not found";
+export const PATIENT_NOT_FOUND_ERROR = "Patient not found";
 
 export default {
   async getAll(): Promise<IAppointment[]> {

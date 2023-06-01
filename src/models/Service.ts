@@ -5,7 +5,7 @@
 import { AuthInstance as mongoose } from "..";
 import { Document } from "mongoose";
 
-export interface IDoctor extends Document {
+export interface IService extends Document {
   nombre: string;
   orden: string;
   especialidad: string;
@@ -67,7 +67,7 @@ doctorSchema.set("toJSON", {
 });
 
 
-export const Service = mongoose.model<IDoctor>(
+export const Service = mongoose.model<IService>(
   "Services",
   doctorSchema
 );
