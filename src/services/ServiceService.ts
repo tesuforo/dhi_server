@@ -14,19 +14,19 @@ export default {
     return Service.find({}).sort("date");
   },
 
-  async create(appointment: IService): Promise<IService> {
-    return Service.create(appointment);
+  async create(service: IService): Promise<IService> {
+    return Service.create(service);
   },
 
-  async updateOne(appointment: IService): Promise<UpdateWriteOpResult> {
-    const persists = await Service.findById(appointment._id);
+  async updateOne(service: IService): Promise<UpdateWriteOpResult> {
+    const persists = await Service.findById(service._id);
     if (!persists) {
       throw new RouteError(
         HttpStatusCodes.NOT_FOUND,
         Service_NOT_FOUND_ERROR
       );
     }
-    return Service.updateOne({ _id: appointment._id }, appointment);
+    return Service.updateOne({ _id: service._id }, service);
   },
 
   async remove(_id: string): Promise<IService | null> {
