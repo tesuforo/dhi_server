@@ -7,6 +7,7 @@ import {
   ValidateNested,
   IsDefined,
 } from 'class-validator';
+import { Schema } from 'mongoose';
 import { Service } from 'typedi';
 
 export enum StatusAppointment {
@@ -34,16 +35,16 @@ export class CreateAppointmentDTO {
 
   @IsDefined({ message: "The 'patientId' field is required." })
   @IsMongoId()
-  patientId: string;
+  patientId: string | Schema.Types.ObjectId;
 
   @IsDefined({ message: "The 'doctorId' field is required." })
   @IsMongoId()
-  doctorId: string;
+  doctorId: string | Schema.Types.ObjectId;
 
   @IsArray()
   @ValidateNested({ each: true })
   @IsMongoId({ each: true })
-  servicesId: string[];
+  servicesId: string[] | Schema.Types.ObjectId[];
 
   @IsString()
   reason: string;
@@ -56,9 +57,9 @@ export class CreateAppointmentDTO {
     title: string;
     start: Date;
     end: Date;
-    patientId: string;
-    doctorId: string;
-    servicesId: string[];
+    patientId: string | Schema.Types.ObjectId;
+    doctorId: string | Schema.Types.ObjectId;
+    servicesId: string[] | Schema.Types.ObjectId[];
     reason: string;
     status: StatusAppointment;
   }) {

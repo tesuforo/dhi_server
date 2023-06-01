@@ -5,6 +5,9 @@ import AppointmentService from '@src/services/AppointmentService';
 import { IReq, IRes } from '../routes/types/express/misc';
 import { IAppointment } from '@src/models/Appointment';
 import { IAppointmentCreateRequest } from '@src/models/Appointment';
+import { CreateAppointmentDTO } from '@src/models/dto/AppointmentRequest.dto';
+import { validate } from 'class-validator';
+import { parseValidationErrors } from '@src/util/message';
 
 /**
  * Get all appointments.
@@ -28,6 +31,14 @@ const getAll = async (_: IReq, res: IRes) => {
  */
 const add = async (req: IReq<IAppointmentCreateRequest>, res: IRes) => {
   const request = req.body;
+  const params: CreateAppointmentDTO = req.body.appointment;
+
+  const valueDto = new CreateAppointmentDTO(params);
+  const dtoValidation = await validate(valueDto);
+  if (dtoValidation && dtoValidation.length > 0) {
+    const errors = parseValidationErrors(dtoValidation);
+    return res.sendStatus(404).send(errors);
+  }
   await AppointmentService.create(request);
   return res.sendStatus(HttpStatusCodes.CREATED);
 };
