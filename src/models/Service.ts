@@ -1,9 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable node/no-extraneous-import */
-import { AuthInstance as mongoose } from "..";
-import { Document } from "mongoose";
+import mongoose, { Document } from "mongoose";
 
 export interface IDoctor extends Document {
   nombre: string;
@@ -18,46 +13,48 @@ export interface IDoctor extends Document {
   color: string;
 }
 
-
-const doctorSchema = new mongoose.Schema({
-  nombre: {
-    type: String,
-    required: true,
+const doctorSchema = new mongoose.Schema(
+  {
+    nombre: {
+      type: String,
+      required: true,
+    },
+    especialidad: {
+      type: String,
+      required: true,
+    },
+    experiencia: {
+      type: Number,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    telefono: {
+      type: String,
+      required: true,
+    },
+    direccion: {
+      type: String,
+      required: true,
+    },
+    consultorio: {
+      type: String,
+      required: true,
+    },
+    horario: {
+      type: Object,
+      required: true,
+    },
+    color: {
+      type: String,
+      required: true,
+    },
   },
-  especialidad: {
-    type: String,
-    required: true,
-  },
-  experiencia: {
-    type: Number,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  telefono: {
-    type: String,
-    required: true,
-  },
-  direccion: {
-    type: String,
-    required: true,
-  },
-  consultorio: {
-    type: String,
-    required: true,
-  },
-  horario: {
-    type: Object,
-    required: true,
-  },
-  color: {
-    type: String,
-    required: true,
-  },
-});
+  { timestamps: true }
+);
 
 doctorSchema.set("toJSON", {
   transform: (_document, returnedObject) => {
@@ -66,9 +63,4 @@ doctorSchema.set("toJSON", {
   },
 });
 
-
-export const Service = mongoose.model<IDoctor>(
-  "Services",
-  doctorSchema
-);
-
+export const Service = mongoose.model<IDoctor>("Services", doctorSchema);

@@ -6,13 +6,13 @@ import { IAppointment, Appointment } from "@src/models/Appointment";
 import { UpdateWriteOpResult } from "mongoose";
 import { Doctor } from "@src/models/Doctor";
 import { Patient } from "@src/models/Patient";
-import { IAppointmentCreateRequest } from "@src/models/AppointmentRequest";
+import { IAppointmentCreateRequest } from "@src/models/Appointment";
+import { DOCTOR_NOT_FOUND_ERROR } from "./DoctorService";
+import { PATIENT_NOT_FOUND_ERROR } from "./PatientService";
 
 // **** Variables **** //
 
 export const APPOINTMENT_NOT_FOUND_ERROR = "Appointment not found";
-export const DOCTOR_NOT_FOUND_ERROR = "Doctor not found";
-export const PATIENT_NOT_FOUND_ERROR = "Doctor not found";
 
 export default {
   async getAll(): Promise<IAppointment[]> {
@@ -30,7 +30,7 @@ export default {
       if (!request.patient) {
         throw new RouteError(
           HttpStatusCodes.NOT_FOUND,
-          PATIENT_NOT_FOUND_ERROR,
+          PATIENT_NOT_FOUND_ERROR
         );
       }
       const newPatient = await Patient.create(request.patient);

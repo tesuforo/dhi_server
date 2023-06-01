@@ -1,9 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable node/no-extraneous-import */
-//import { AuthInstance as mongoose } from "..";
 import mongoose, { Schema, Document } from "mongoose";
+import { IPatient } from "./Patient";
 
 export interface IAppointment extends Document {
   title: string;
@@ -13,7 +9,9 @@ export interface IAppointment extends Document {
   doctorId: Schema.Types.ObjectId;
   servicesId: Schema.Types.ObjectId[];
   reason: string;
-  status: "Pendiente" | "Confirmada" | "Cancelada";
+  status: "Pendiente" | "Confirmada" | "Cancelada" | "Completada" | "Desabilitada";
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const appointmentSchema = new mongoose.Schema(
@@ -29,7 +27,7 @@ const appointmentSchema = new mongoose.Schema(
     reason: { type: String, required: true, trim: true },
     status: {
       type: String,
-      enum: ["Pendiente", "Confirmada", "Cancelada"],
+      enum: ["Pendiente", "Confirmada", "Cancelada", "Completada", "Desabilitada"],
       default: "Pendiente",
       required: true,
     },
@@ -48,3 +46,8 @@ export const Appointment = mongoose.model<IAppointment>(
   "Appointments",
   appointmentSchema
 );
+
+export interface IAppointmentCreateRequest {
+  appointment: IAppointment;
+  patient: IPatient;
+}

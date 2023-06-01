@@ -1,9 +1,9 @@
 {
   "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "@typescript-eslint"
-  ],
+  "plugins": ["@typescript-eslint"],
   "extends": [
+    "prettier",
+    "prettier/@typescript-eslint",
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
@@ -13,7 +13,21 @@
     "project": "./tsconfig.json"
   },
   "rules": {
-    "@typescript-eslint/explicit-member-accessibility": "warn",
+    // TS off
+    "@typescript-eslint/interface-name-prefix": "off",
+    "@typescript-eslint/explicit-member-accessibility": [
+      {
+        "accessibility": "off",
+        "overrides": { "parameterProperties": "explicit" }
+      }
+    ],
+
+    // TS errors
+    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/no-misused-new": "error",
+    "@typescript-eslint/explicit-module-boundary-types": "error",
+    "@typescript-eslint/no-non-null-assertion": "error",
+
     "@typescript-eslint/no-misused-promises": 0,
     "@typescript-eslint/no-floating-promises": 0,
     "max-len": [
@@ -25,16 +39,20 @@
     "comma-dangle": ["warn", "always-multiline"],
     "no-console": 1,
     "no-extra-boolean-cast": 0,
-    "semi": 1,
     "indent": ["warn", 2],
-    "quotes": ["warn", "single"],
     "node/no-process-env": 1,
     "node/no-unsupported-features/es-syntax": [
       "error",
-      { "ignores" : ["modules"] }
+      { "ignores": ["modules"] }
     ],
     "node/no-missing-import": 0,
-    "node/no-unpublished-import": 0
+    "node/no-unpublished-import": 0,
+
+    // Eslint off
+    "import/extensions": "off",
+    "import/prefer-default-export": "off",
+    "semi": ["error", "always"],
+    "quotes": [2, "single", { "avoidEscape": true }]
   },
   "settings": {
     "node": {
