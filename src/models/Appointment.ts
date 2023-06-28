@@ -1,19 +1,18 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable node/no-extraneous-import */
-//import { AuthInstance as mongoose } from "..";
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from 'mongoose';
+import { IPatient } from './Patient';
+import { StatusAppointment } from './dto/AppointmentRequest.dto';
 
 export interface IAppointment extends Document {
   title: string;
   start: Date;
   end: Date;
-  patientId: Schema.Types.ObjectId;
-  doctorId: Schema.Types.ObjectId;
-  servicesId: Schema.Types.ObjectId[];
+  patientId: Schema.Types.ObjectId | string;
+  doctorId: Schema.Types.ObjectId | string;
+  servicesId: Schema.Types.ObjectId[] | string[];
   reason: string;
-  status: "Pendiente" | "Confirmada" | "Cancelada";
+  status: StatusAppointment;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const appointmentSchema = new mongoose.Schema(
@@ -21,23 +20,30 @@ const appointmentSchema = new mongoose.Schema(
     title: { type: String, required: true, trim: true },
     start: { type: Date, required: true },
     end: { type: Date, required: true },
-    patientId: { type: Schema.Types.ObjectId, required: true, ref: "Patients" },
-    doctorId: { type: Schema.Types.ObjectId, required: true, ref: "Doctors" },
+    patientId: { type: Schema.Types.ObjectId, required: true, ref: 'Patients' },
+    doctorId: { type: Schema.Types.ObjectId, required: true, ref: 'Doctors' },
     servicesId: [
-      { type: Schema.Types.ObjectId, required: true, ref: "Services" },
+      { type: Schema.Types.ObjectId, required: true, ref: 'Services' },
     ],
     reason: { type: String, required: true, trim: true },
     status: {
       type: String,
-      enum: ["Pendiente", "Confirmada", "Cancelada"],
-      default: "Pendiente",
+      enum: [
+        'Pendiente',
+        'Confirmada',
+        'Cancelada',
+        'Completada',
+        'Desabilitada',
+        'Reprogramada',
+      ],
+      default: 'Pendiente',
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-appointmentSchema.set("toJSON", {
+appointmentSchema.set('toJSON', {
   transform: (_document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject.__v;
@@ -45,6 +51,11 @@ appointmentSchema.set("toJSON", {
 });
 
 export const Appointment = mongoose.model<IAppointment>(
-  "Appointments",
-  appointmentSchema
+  'Appointments',
+  appointmentSchema,
 );
+
+export interface IAppointmentCreateRequest {
+  appointment: IAppointment;
+  patient: IPatient;
+}

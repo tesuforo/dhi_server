@@ -14,19 +14,19 @@ export default {
     return Doctor.find({}).sort("date");
   },
 
-  async create(appointment: IDoctor): Promise<IDoctor> {
-    return Doctor.create(appointment);
+  async create(doctor: IDoctor): Promise<IDoctor> {
+    return Doctor.create(doctor);
   },
 
-  async updateOne(appointment: IDoctor): Promise<UpdateWriteOpResult> {
-    const persists = await Doctor.findById(appointment._id);
+  async updateOne(doctor: IDoctor): Promise<UpdateWriteOpResult> {
+    const persists = await Doctor.findById(doctor._id);
     if (!persists) {
       throw new RouteError(
         HttpStatusCodes.NOT_FOUND,
         DOCTOR_NOT_FOUND_ERROR
       );
     }
-    return Doctor.updateOne({ _id: appointment._id }, appointment);
+    return Doctor.updateOne({ _id: doctor._id }, doctor);
   },
 
   async remove(_id: string): Promise<IDoctor | null> {

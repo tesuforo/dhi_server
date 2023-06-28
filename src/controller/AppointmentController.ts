@@ -1,10 +1,13 @@
-import HttpStatusCodes from "@src/constants/HttpStatusCodes";
+import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 
-import AppointmentService from "@src/services/AppointmentService";
+import AppointmentService from '@src/services/AppointmentService';
 
-import { IReq, IRes } from "../routes/types/express/misc";
-import { IAppointment } from "@src/models/Appointment";
-import { IAppointmentCreateRequest } from "@src/models/AppointmentRequest";
+import { IReq, IRes } from '../routes/types/express/misc';
+import { IAppointment } from '@src/models/Appointment';
+import { IAppointmentCreateRequest } from '@src/models/Appointment';
+import { CreateAppointmentDTO } from '@src/models/dto/AppointmentRequest.dto';
+import { validate } from 'class-validator';
+import { parseValidationErrors } from '@src/util/message';
 
 /**
  * Get all appointments.
@@ -17,10 +20,9 @@ const getAll = async (_: IReq, res: IRes) => {
     const appointments = await AppointmentService.getAll();
     return res.status(HttpStatusCodes.OK).json({ appointments });
   } catch (error) {
-    console.error(error);
     return res
       .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: "Internal Server Error" });
+      .json({ error: 'Internal Server Error' });
   }
 };
 
@@ -29,6 +31,14 @@ const getAll = async (_: IReq, res: IRes) => {
  */
 const add = async (req: IReq<IAppointmentCreateRequest>, res: IRes) => {
   const request = req.body;
+  const params: CreateAppointmentDTO = req.body.appointment;
+
+  const valueDto = new CreateAppointmentDTO(params);
+  const dtoValidation = await validate(valueDto);
+  if (dtoValidation && dtoValidation.length > 0) {
+    const errors = parseValidationErrors(dtoValidation);
+    return res.sendStatus(404).send(errors);
+  }
   await AppointmentService.create(request);
   return res.sendStatus(HttpStatusCodes.CREATED);
 };
@@ -50,7 +60,7 @@ const update = async (req: IReq<IAppointment>, res: IRes) => {
  */
 const delete_ = async (req: IReq, res: IRes) => {
   const { id } = req.params;
-  if (!id || typeof id !== "string") {
+  if (!id || typeof id !== 'string') {
     return res.sendStatus(HttpStatusCodes.BAD_REQUEST);
   }
   try {

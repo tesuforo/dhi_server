@@ -1,9 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable node/no-extraneous-import */
-import { AuthInstance as mongoose } from "..";
-import { Document } from "mongoose";
+import mongoose, { Document } from "mongoose";
 
 export interface IService extends Document {
   nombre: string;
@@ -71,4 +66,3 @@ export const Service = mongoose.model<IService>(
   "Services",
   doctorSchema
 );
-
