@@ -38,6 +38,14 @@ const Paths = {
     Update: '/update',
     Delete: '/delete/:id',
   },
+  Service: {
+    Base: '/service',
+    Get: '/all',
+    Id: '/:id',
+    Add: '/add',
+    Update: '/update',
+    Delete: '/delete/:id',
+  },
 };
 
 
