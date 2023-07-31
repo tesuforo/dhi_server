@@ -1,65 +1,15 @@
+import app from './app';
+
 /**
- * Setup express server.
+ * Start Express server.
  */
-
-import morgan from 'morgan';
-import helmet from 'helmet';
-import express, { Request, Response } from 'express';
-import logger from 'jet-logger';
-
-import 'express-async-errors';
-
-import UserRouter from '@src/routes/UserRouter';
-import AppointmentRouter from '@src/routes/AppointmentRouter';
-import DoctorRouter from '@src/routes/DoctorRouter';
-import PatientRouter from '@src/routes/PatientRouter';
-import Paths from '@src/routes/constants/Paths';
-
-import EnvVars from '@src/constants/EnvVars';
-import HttpStatusCodes from '@src/constants/HttpStatusCodes';
-
-import { NodeEnvs } from '@src/constants/misc';
-import { RouteError } from '@src/other/classes';
-
-// **** Variables **** //
-const app = express();
-
-// **** Setup **** //
-
-// Basic middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Show routes called in console during development
-if (EnvVars.NodeEnv === NodeEnvs.Dev) {
-  app.use(morgan('dev'));
-}
-
-// Security
-if (EnvVars.NodeEnv === NodeEnvs.Production) {
-  app.use(helmet());
-}
-
-// Add APIs, must be after middleware
-app.use(Paths.Base, UserRouter);
-app.use(Paths.Base, AppointmentRouter);
-app.use(Paths.Base, DoctorRouter);
-app.use(Paths.Base, PatientRouter);
-
-// Add error handler
-app.use((err: Error, req: Request, res: Response) => {
-  if (EnvVars.NodeEnv !== NodeEnvs.Test) {
-    logger.err(err, true);
-  }
-
-  let status = HttpStatusCodes.BAD_REQUEST;
-  if (err instanceof RouteError) {
-    status = err.status;
-  }
-
-  return res.status(status).json({ error: err.message });
+const server = app.listen(app.get('port'), () => {
+    console.log(
+        '  App is running at http://localhost:%d in %s mode',
+        app.get('port'),
+        app.get('env')
+    );
+    console.log('  Press CTRL-C to stop\n');
 });
 
-// **** Export default **** //
-
-export default app;
+export default server;
