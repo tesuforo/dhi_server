@@ -34,14 +34,14 @@ function remove(loc: string): Promise<void> {
 
 /**
  * Copy file.
- */
+
 function copy(src: string, dest: string): Promise<void> {
   return new Promise((res, rej) => {
     return fs.copy(src, dest, (err) => {
       return (!!err ? rej(err) : res());
     });
   });
-}
+} */
 
 /**
  * Do command line command.
