@@ -5,11 +5,12 @@
         "node": ">=16.10.0"
     },
     "scripts": {
-        "build": "npx ts-node build.ts && npm run lint",
-        "lint": "npx eslint --ext .ts src/",
+        "build": "SET NODE_ENV=production&& npx ts-node --transpile-only build.ts&& npm run lint",
+        "lint": "npx eslint --ext .ts",
         "lint:tests": "npx eslint --ext .ts test/",
-        "start": "SET NODE_ENV=development&& nodemon",
-        "dev": "nodemon",
+        "dev": "SET NODE_ENV=development&& nodemon",
+        "start": "node dist/server.js",
+        "prod": "node dist/server.js --env production",
         "test": "nodemon --config ./test/nodemon.json"
     },
     "nodemonConfig": {
@@ -17,7 +18,7 @@
             "src"
         ],
         "ext": "ts",
-        "exec": "./node_modules/.bin/ts-node --files -r tsconfig-paths/register ./src"
+        "exec": "./node_modules/.bin/ts-node --files -r tsconfig-paths/register ./src/server.ts"
     },
     "_moduleAliases": {
         "src": "dist"
