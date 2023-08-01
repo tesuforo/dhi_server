@@ -2,14 +2,14 @@
     "name": "appointment-scheduling-backend",
     "version": "0.0.0",
     "engines": {
-        "node": ">=16.10.0"
+        "node": ">=18.10.0"
     },
     "scripts": {
-        "build": "SET NODE_ENV=production&& npx ts-node --transpile-only build.ts&& npm run lint",
+        "build": "npx ts-node --transpile-only build.ts&& npm run lint",
         "lint": "npx eslint --ext .ts",
         "lint:tests": "npx eslint --ext .ts test/",
         "dev": "SET NODE_ENV=development&& nodemon",
-        "start": "node dist/server.js",
+        "start": "npx ts-node dist/server.js",
         "prod": "node dist/server.js --env production",
         "test": "nodemon --config ./test/nodemon.json"
     },
@@ -25,6 +25,7 @@
     },
     "dependencies": {
         "@directus/sdk": "^11.0.1",
+        "@directus/tsconfig": "^1.0.0",
         "bson": "^5.4.0",
         "class-validator": "^0.14.0",
         "cookie-parser": "^1.4.6",

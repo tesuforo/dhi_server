@@ -14,8 +14,8 @@ import { Service } from 'typedi';
 @ValidatorConstraint({ name: 'custom', async: false })
 class ArrayLengthEqualsStringLength implements ValidatorConstraintInterface {
     validate(array: string[], _args: ValidationArguments) {
-        const longitudEsperada = array.length;
-        return array.every((str) => str.length === longitudEsperada);
+        const longitudEsperada = array?.length;
+        return array?.every((str) => str.length === longitudEsperada);
     }
 
     defaultMessage(_args: ValidationArguments) {
@@ -25,7 +25,7 @@ class ArrayLengthEqualsStringLength implements ValidatorConstraintInterface {
 
 @Service()
 export class MutantRequestDTO {
-    @IsArray()
+    @IsArray({ message: 'El listado de ADN no puede estar vacío' })
     @ArrayNotEmpty({ message: 'El listado de ADN no puede estar vacío' })
     @Matches(/^[ATCG]+$/, { message: 'El listado de ADN solo puede contener los caracteres A, T, C y G', each: true })
     @IsString({ each: true, message: 'Todos los elementos deben ser de tipo string' })

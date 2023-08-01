@@ -1,6 +1,9 @@
 {
+    "ts-node": {
+        "esm": true
+    },
     "compilerOptions": {
-        "target": "esnext",
+        "target": "ES2022",
         "module": "commonjs",
         "outDir": "dist",
         "strict": true,
@@ -26,6 +29,6 @@
             "*": ["node_modules/*"]
         }
     },
-    "include": ["src/**/*.ts", "spec/**/*.ts", "build.ts"],
+    "include": ["src/**/*.ts", "build.ts"],
     "exclude": ["node_modules"]
 }

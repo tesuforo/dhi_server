@@ -1,4 +1,9 @@
-import { GetMapping, PostMapping, RestController, UserAccessLevel } from 'internal';
+import {
+    GetMapping,
+    PostMapping,
+    RestController,
+    UserAccessLevel,
+} from 'internal';
 import { MutantService } from 'services';
 import { Request, Response } from 'express';
 import { MutantRequestDTO } from 'internal';
@@ -38,9 +43,10 @@ export class MutantController {
      *       403:
      *         description: Respuesta cuando no es mutante
      */
-    @PostMapping('/')
+    @PostMapping('/', UserAccessLevel.Authenticated)
     async isMutant(req: Request, res: Response) {
-        const { body } = req;
+        const { body, headers } = req;
+
         const request = new MutantRequestDTO(body);
         const dtoValidation = await validate(request);
         if (dtoValidation && dtoValidation.length > 0) {
@@ -48,7 +54,10 @@ export class MutantController {
             res.status(400).send(errors);
         }
         try {
-            const data = await this.mutantService.isMutant(request.dna.map((str) => str.toUpperCase()));
+            const data = await this.mutantService.isMutant(
+                request.dna.map((str) => str.toUpperCase()),
+                headers.authorization?.replace('Bearer ','') ?? '',
+            );
             if (data) {
                 res.send('OK');
             } else {

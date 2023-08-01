@@ -1,11 +1,12 @@
 import { Service } from 'typedi';
-import { StatsResponse } from 'internal';
+import * as Directus from '@directus/sdk/dist/index.cjs';
+import { StatsResponse, IProfessional } from 'internal';
 
 @Service()
 export class MutantService {
     constructor() {}
 
-    async isMutant(adn: string[]): Promise<boolean> {
+    async isMutant(adn: string[], token: string): Promise<boolean> {
         const n = adn.length; // Tamaño de la tabla NxN
         const sequences = []; // Almacenará las secuencias encontradas
 
@@ -31,10 +32,28 @@ export class MutantService {
                 horizontalSequence.match(/([ATCG])\1{3}/g), // Secuencias horizontales de 4 letras iguales
                 verticalSequence.match(/([ATCG])\1{3}/g), // Secuencias verticales de 4 letras iguales
                 diagonalRightSequence.match(/([ATCG])\1{3}/g), // Secuencias diagonales derechas de 4 letras iguales
-                diagonalLeftSequence.match(/([ATCG])\1{3}/g) // Secuencias diagonales izquierdas de 4 letras iguales
+                diagonalLeftSequence.match(/([ATCG])\1{3}/g), // Secuencias diagonales izquierdas de 4 letras iguales
             ];
 
             sequences.push(...sequencesFound.filter((sequence) => sequence));
+        }
+
+        try {
+            console.log(token);
+            const client = Directus.createDirectus(
+                process.env.DIRECTUS_URI ?? '',
+            )
+                .with(Directus.staticToken(token))
+                .with(Directus.rest());
+            console.log(client);
+            const profesionals = await client.request<IProfessional[]>(
+                Directus.readItems('profesionales', {
+                    fields: ['*'],
+                }),
+            );
+            console.log(profesionals);
+        } catch (error) {
+            console.log(error);
         }
 
         // Verificar si se encontraron más de una secuencia de 4 letras iguales
