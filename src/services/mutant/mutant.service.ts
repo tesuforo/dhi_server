@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import * as Directus from '@directus/sdk/dist/index.cjs';
+import * as Directus from '@directus/sdk';
 import { StatsResponse, IProfessional } from 'internal';
 
 @Service()
