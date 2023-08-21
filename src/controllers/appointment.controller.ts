@@ -142,12 +142,51 @@ export class AppointmentController {
      *           schema:
      *             $ref: '#/components/schemas/CreateAppointmentDTO'
      *     responses:
-     *       '201':
-     *         description: Appointment created successfully
-     *       '400':
-     *         description: Bad request
-     *       '500':
-     *         description: Internal server error
+     *       200:
+     *         description: Respuesta exitosa
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   description: estado.
+     *                   example: OK
+     *                 data:
+     *                   type: string
+     *                   description: Data de la cita creada.
+     *                   example: {}
+     *       401:
+     *         description: Respuesta token expirado
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   description: estado.
+     *                   example: ERROR
+     *                 message:
+     *                   type: string
+     *                   description: Resultado si el token está vencido.
+     *                   example: Expired token
+     *       500:
+     *         description: Error general o de validación de token
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   description: estado.
+     *                   example: ERROR
+     *                 message:
+     *                   type: string
+     *                   description: Resultado existe un error.
+     *                   example: Failed to authenticate user
      */
     @PostMapping('/', UserAccessLevel.Authenticated)
     async create(req: Request, res: Response): Promise<void> {
@@ -225,12 +264,51 @@ export class AppointmentController {
      *           schema:
      *             $ref: '#/components/schemas/CreateAppointmentDTO'
      *     responses:
-     *       '201':
-     *         description: Appointment created successfully
-     *       '400':
-     *         description: Bad request
-     *       '500':
-     *         description: Internal server error
+     *       200:
+     *         description: Respuesta exitosa
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   description: estado.
+     *                   example: OK
+     *                 data:
+     *                   type: string
+     *                   description: Data de la cita actualizada.
+     *                   example: {}
+     *       401:
+     *         description: Respuesta token expirado
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   description: estado.
+     *                   example: ERROR
+     *                 message:
+     *                   type: string
+     *                   description: Resultado si el token está vencido.
+     *                   example: Expired token
+     *       500:
+     *         description: Error general o de validación de token
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   description: estado.
+     *                   example: ERROR
+     *                 message:
+     *                   type: string
+     *                   description: Resultado existe un error.
+     *                   example: Failed to authenticate user
      */
     @PutMapping('/:id', UserAccessLevel.Authenticated)
     async updated(req: Request, res: Response): Promise<void> {
