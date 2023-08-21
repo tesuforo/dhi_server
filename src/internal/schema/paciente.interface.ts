@@ -1,21 +1,22 @@
 export interface IPatient {
-    id: number;
-    estado: string;
-    tipo_documento: string;
-    documento: string;
+    id?: number;
+    estado?: string;
+    tipo_documento?: string;
+    documento?: string;
     nombres: string;
     apellido_paterno: string;
-    apellido_materno: string;
-    fecha_nacimiento: string; // Formato de fecha: "YYYY-MM-DD"
-    genero: string;
+    apellido_materno?: string;
+    fecha_nacimiento?: string; // Formato de fecha: "YYYY-MM-DD"
+    genero?: string;
     correo: string;
     telefono: string;
-    registrado: boolean;
-    estado_civil: string;
-    user_created: string; // UUID
-    date_created: string; // Formato de fecha/hora: "YYYY-MM-DDTHH:mm:ss"
-    user_updated: string; // UUID
-    date_updated: string; // Formato de fecha/hora: "YYYY-MM-DDTHH:mm:ss"
+    telefono_2?: string;
+    registrado?: boolean;
+    estado_civil?: string;
+    user_created?: string; // UUID
+    date_created?: string; // Formato de fecha/hora: "YYYY-MM-DDTHH:mm:ss"
+    user_updated?: string; // UUID
+    date_updated?: string; // Formato de fecha/hora: "YYYY-MM-DDTHH:mm:ss"
 }
 
 export interface IPatientFile {

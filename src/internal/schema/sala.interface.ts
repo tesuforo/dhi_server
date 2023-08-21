@@ -1,6 +1,6 @@
 import { IService  } from 'internal';
 
-export interface Sala {
+export interface ISala {
     id: number;
     estado: string;
     nombre: string;
@@ -11,8 +11,8 @@ export interface Sala {
     date_updated: string; // Formato de fecha/hora: "YYYY-MM-DDTHH:mm:ss"
 }
 
-export interface SalaServicio {
+export interface ISalaServicio {
     id: number;
-    salas_id: Sala;
+    salas_id: ISala;
     servicios_id: IService[];
 }

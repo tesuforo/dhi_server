@@ -1,29 +1,30 @@
 
-import { IPatient, IProfessional, SalaServicio, IService  } from 'internal';
+import { IPatient, IProfessional, ISalaServicio, IService  } from 'internal';
 
 export interface IAppointment {
-    id: number;
+    id?: number;
     titulo: string;
-    inicio: string; // Formato de fecha/hora: "YYYY-MM-DDTHH:mm:ss"
-    fin: string; // Formato de fecha/hora: "YYYY-MM-DDTHH:mm:ss"
-    paciente: IPatient;
-    profesional: IProfessional;
+    inicio: Date; // Formato de fecha/hora: "YYYY-MM-DDTHH:mm:ss"
+    fin: Date; // Formato de fecha/hora: "YYYY-MM-DDTHH:mm:ss"
+    paciente?: IPatient | number;
+    profesional: IProfessional | number;
+    servicios: ICitaSalaServicio;
     comentario: string;
-    estado: EstadoCita;
-    user_created: string; // UUID
-    date_created: string; // Formato de fecha/hora: "YYYY-MM-DDTHH:mm:ss"
-    user_updated: string; // UUID
-    date_updated: string; // Formato de fecha/hora: "YYYY-MM-DDTHH:mm:ss"
-    estado_pago: EstadoPago;
+    estado?: EstadoCita | number;
+    user_created?: string; // UUID
+    date_created?: string; // Formato de fecha/hora: "YYYY-MM-DDTHH:mm:ss"
+    user_updated?: string; // UUID
+    date_updated?: string; // Formato de fecha/hora: "YYYY-MM-DDTHH:mm:ss"
+    estado_pago?: EstadoPago | number;
 }
 
-export interface CitaSalaServicio {
-    id: number;
-    citas_id: IAppointment;
-    salas_servicios_id: SalaServicio[];
+export interface ICitaSalaServicio {
+    id?: number | string;
+    citas_id: IAppointment | number | string;
+    salas_servicios_id: ISalaServicio[] | number[];
 }
 
-export interface CitaServicio {
+export interface ICitaServicio {
     id: number;
     citas_id: IAppointment;
     servicios_id: IService;
