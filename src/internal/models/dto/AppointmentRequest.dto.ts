@@ -1,10 +1,12 @@
 import {
     IsArray,
     IsString,
-    IsDate,
-    ValidateNested,
     IsDefined,
     IsNumber,
+    IsBoolean,
+    IsOptional,
+    IsDateString,
+    ArrayNotEmpty
 } from 'class-validator';
 import { Service } from 'typedi';
 
@@ -14,6 +16,7 @@ export class CreateAppointmentDTO {
         { allowInfinity: false, allowNaN: false },
         { message: "The 'event_id' field must be number." },
     )
+    @IsOptional()
     event_id: number;
 
     @IsDefined({ message: "The 'title' field is required." })
@@ -21,17 +24,18 @@ export class CreateAppointmentDTO {
     title: string;
 
     @IsDefined({ message: "The 'start' field is required." })
-    @IsDate()
+    @IsDateString()
     start: Date;
 
     @IsDefined({ message: "The 'end' field is required." })
-    @IsDate()
+    @IsDateString()
     end: Date;
 
     @IsNumber(
         { allowInfinity: false, allowNaN: false },
         { message: "The 'client_id' field must be number." },
     )
+    @IsOptional()
     client_id: number;
 
     @IsDefined({ message: "The 'professional_id' field is required." })
@@ -41,14 +45,19 @@ export class CreateAppointmentDTO {
     box_id: number;
 
     @IsArray()
-    @ValidateNested({ each: true })
-    @IsDefined({ message: "The  Array 'service_id' field is required." })
+    @ArrayNotEmpty({ message: 'The list of services not empty' })
+    @IsNumber({},{each: true})
+    @IsDefined({
+        message: "The  Array 'service_id' field is required.",
+    })
     service_id: number[];
 
     @IsString()
+    @IsOptional()
     data_sheet: string;
 
     @IsString()
+    @IsOptional()
     identification: string;
 
     @IsString()
@@ -68,7 +77,8 @@ export class CreateAppointmentDTO {
     dialling_2: string;
     @IsString()
     email: string;
-    @IsString()
+    @IsBoolean()
+    @IsOptional()
     sent_email: boolean;
     @IsString()
     description: string;
@@ -76,13 +86,18 @@ export class CreateAppointmentDTO {
         { allowInfinity: false, allowNaN: false },
         { message: "The 'state_id' field must be number." },
     )
+    @IsOptional()
     state_id: number;
 
     @IsNumber(
         { allowInfinity: false, allowNaN: false },
         { message: "The 'pay_id' field must be number." },
     )
+    @IsOptional()
     pay_id: number;
+
+    @IsOptional()
+    identification_type: string;
 
     constructor(params: {
         event_id: number;
@@ -94,6 +109,7 @@ export class CreateAppointmentDTO {
         box_id: number;
         service_id: number[];
         data_sheet: string;
+        identification_type: string;
         identification: string;
         first_name: string;
         middle_name: string;
@@ -119,6 +135,7 @@ export class CreateAppointmentDTO {
             service_id,
             box_id,
             data_sheet,
+            identification_type,
             identification,
             first_name,
             middle_name,
@@ -143,6 +160,7 @@ export class CreateAppointmentDTO {
         this.box_id = box_id;
         this.service_id = service_id;
         this.data_sheet = data_sheet;
+        this.identification_type = identification_type;
         this.identification = identification;
         this.first_name = first_name;
         this.middle_name = middle_name;

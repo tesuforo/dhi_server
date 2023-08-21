@@ -70,13 +70,16 @@ export class MessageUtil {
 
 export const parseValidationErrors = (errors: ValidationError[]): string => {
   const errorMessages = errors.reduce((acc, element) => {
-    const property = Object.values(element.constraints as any).reduce(
-      (_, valueproperty) => {
-        return valueproperty;
-      },
-      '',
-    );
-    return `${acc} ${acc ? '-- ' : ''}${property}`;
+      if (element.constraints) {
+          const property = Object.values(element.constraints).reduce((_, valueproperty) => {
+              return valueproperty;
+          }, '');
+          return `${acc} ${acc ? '-- ' : ''}${property}`;
+      }
+      if (element.children) {
+          return parseValidationErrors(element.children);
+      }
+      return '';
   }, '');
-  return `Required fields: ${errorMessages}`;
+  return `${errorMessages}`;
 };

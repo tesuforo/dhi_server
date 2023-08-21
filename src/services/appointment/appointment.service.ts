@@ -22,7 +22,6 @@ export class AppointmentService {
                 telefono: request.dialling + request.phone,
                 telefono_2: request.dialling_2 + request.phone_2,
                 registrado: false,
-                estado: 'Pendiente',
             };
 
             patientCreate = await client.request<IPatient>(
@@ -30,7 +29,7 @@ export class AppointmentService {
             );
         }
 
-        if (!patientCreate || !request.client_id) {
+        if (!patientCreate && !request.client_id) {
             throw new Error('Error create Patient or Patient id is required');
         }
 
@@ -40,8 +39,11 @@ export class AppointmentService {
             fin: request.end,
             paciente: patientCreate ?? request.client_id,
             profesional: request.professional_id,
-            services: request.service_id,
-            comentario: request.description
+            servicios: request.service_id.map((id) => ({
+                citas_id: '+',
+                salas_servicios_id: { id },
+            })) as any,
+            comentario: request.description,
         };
 
         const appoinmentCreate = await client.request<IAppointment>(
@@ -54,16 +56,13 @@ export class AppointmentService {
             ...request,
             event_id: appoinmentCreate.id,
             client_id: appointment.paciente,
+            service_id: appoinmentCreate.servicios,
         };
     }
 
-    async update(token: string, request: CreateAppointmentDTO) {
-        if (request.client_id) {
+    async update(token: string, request: CreateAppointmentDTO, id: number) {
+        if (!request.client_id) {
             throw new Error('Client id is required');
-        }
-
-        if (request.event_id) {
-            throw new Error('Event id id is required');
         }
 
         const client = Directus.createDirectus(process.env.DIRECTUS_URI ?? '')
@@ -71,6 +70,7 @@ export class AppointmentService {
             .with(Directus.rest());
 
         const patient: IPatient = {
+            tipo_documento: request.identification_type,
             nombres: request.first_name + ' ' + request.middle_name,
             apellido_paterno: request.last_name,
             apellido_materno: request.last_name_2,
@@ -87,18 +87,19 @@ export class AppointmentService {
             titulo: request.title,
             inicio: request.start,
             fin: request.end,
-            paciente: request.client_id,
             profesional: request.professional_id,
-            services: request.service_id,
+            servicios: request.service_id.map((idService) => ({
+                citas_id: id,
+                salas_servicios_id: { id: idService },
+            })) as any,
             comentario: request.description,
             estado: request.state_id,
             estado_pago: request.pay_id,
         };
 
         await client.request<IAppointment>(
-            Directus.updateItem('citas', request.event_id, appointment),
+            Directus.updateItem('citas', id, appointment),
         );
-
         return request;
     }
 }

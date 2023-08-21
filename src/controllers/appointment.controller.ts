@@ -100,8 +100,10 @@ export class AppointmentController {
             const request = new CreateAppointmentDTO(body);
             const dtoValidation = await validate(request);
             if (dtoValidation && dtoValidation.length > 0) {
+                console.log(dtoValidation);
                 const errors = parseValidationErrors(dtoValidation);
                 res.status(400).send(errors);
+                return;
             }
             // verify token hasn't expired yet
             const isValidToken = await validateToken(token);
@@ -121,15 +123,16 @@ export class AppointmentController {
             }
             res.status(500).json({
                 status: 'ERROR',
-                message: error.message ?? 'Internal Server Error',
+                message: error.message ?? error?.errors[0]?.message ?? 'Internal Server Error',
             });
+               console.error(error);
         }
     }
 
-    @PutMapping('/', UserAccessLevel.Authenticated)
+    @PutMapping('/:id', UserAccessLevel.Authenticated)
     async updated(req: Request, res: Response): Promise<void> {
         try {
-            const { headers, body } = req;
+            const { headers, body, params } = req;
 
             if (!body) {
                 res.status(400).json({ message: 'Body is required' });
@@ -141,6 +144,10 @@ export class AppointmentController {
             // verify request has token
             if (!token) {
                 res.status(401).json({ message: 'Invalid token' });
+                return;
+            }
+            if(!params || !params.id || isNaN(Number(params.id))) {
+                res.status(400).json({ message: 'Id is required' });
                 return;
             }
 
@@ -155,7 +162,7 @@ export class AppointmentController {
             if (isValidToken) {
                 res.status(200).json({
                     status: 'OK',
-                    data: await this.appointmentService.create(token, request),
+                    data: await this.appointmentService.update(token, request, Number(params.id)),
                 });
             }
         } catch (error) {
@@ -168,8 +175,9 @@ export class AppointmentController {
             }
             res.status(500).json({
                 status: 'ERROR',
-                message: error.message ?? 'Internal Server Error',
+                message: error.message ?? error?.errors[0]?.message ?? 'Internal Server Error',
             });
+            console.error(error);
         }
     }
 }
