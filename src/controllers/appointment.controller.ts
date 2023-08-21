@@ -11,6 +11,106 @@ import { parseValidationErrors, validateToken } from 'utils';
 import { validate } from 'class-validator';
 import { PutMapping } from '../internal/decorators/rest/RequestMapping.decorator';
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     CreateAppointmentDTO:
+ *       type: object
+ *       properties:
+ *         event_id:
+ *           type: number
+ *           description: ID of the associated event (optional)
+ *         title:
+ *           type: string
+ *           description: Title of the appointment
+ *         start:
+ *           type: string
+ *           format: date-time
+ *           description: Start date and time of the appointment
+ *         end:
+ *           type: string
+ *           format: date-time
+ *           description: End date and time of the appointment
+ *         client_id:
+ *           type: number
+ *           description: ID of the associated client (optional)
+ *         professional_id:
+ *           type: number
+ *           description: ID of the associated professional
+ *         service_id:
+ *           type: array
+ *           items:
+ *             type: number
+ *           description: List of service IDs
+ *         data_sheet:
+ *           type: string
+ *           description: Data sheet information (optional)
+ *         identification_type:
+ *           type: string
+ *           description: Type of identification (optional)
+ *         identification:
+ *           type: string
+ *           description: Identification information (optional)
+ *         first_name:
+ *           type: string
+ *           description: First name
+ *         middle_name:
+ *           type: string
+ *           description: Middle name
+ *         last_name:
+ *           type: string
+ *           description: Last name
+ *         last_name_2:
+ *           type: string
+ *           description: Second last name
+ *         phone:
+ *           type: string
+ *           description: Phone number
+ *         phone_2:
+ *           type: string
+ *           description: Second phone number
+ *         dialling:
+ *           type: string
+ *           description: Dialling code
+ *         dialling_2:
+ *           type: string
+ *           description: Second dialling code
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: Email address
+ *         sent_email:
+ *           type: boolean
+ *           description: Whether an email was sent
+ *         description:
+ *           type: string
+ *           description: Description of the appointment
+ *         state_id:
+ *           type: number
+ *           description: ID of the state (optional)
+ *         pay_id:
+ *           type: number
+ *           description: ID of the payment (optional)
+ *       required:
+ *         - title
+ *         - start
+ *         - end
+ *         - professional_id
+ *         - service_id
+ *         - first_name
+ *         - middle_name
+ *         - last_name
+ *         - phone
+ *         - email
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   name: Appointments
+ *   description: APIs related to appointments
+ */
 @RestController('/appointment', UserAccessLevel.Public)
 export class AppointmentController {
     constructor(private appointmentService: AppointmentService) {}
@@ -25,15 +125,22 @@ export class AppointmentController {
 
     /**
      * @swagger
-     * /rest/appointment:
+     * /rest/appointments:
      *   post:
-     *     summary: creación de cita
+     *     summary: Create a new appointment
+     *     tags: [Appointments]
      *     parameters:
      *     - in: header
      *       name: authorization
-     *       description: Token Autorización
+     *       description: Token Bearer a validar
      *       required: true
      *       type: string
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/CreateAppointmentDTO'
      *     responses:
      *       200:
      *         description: Respuesta exitosa
@@ -123,12 +230,86 @@ export class AppointmentController {
             }
             res.status(500).json({
                 status: 'ERROR',
-                message: error.message ?? error?.errors[0]?.message ?? 'Internal Server Error',
+                message:
+                    error.message ??
+                    error?.errors[0]?.message ??
+                    'Internal Server Error',
             });
-               console.error(error);
+            console.error(error);
         }
     }
 
+    /**
+     * @swagger
+     * /rest/appointments/{id}:
+     *   put:
+     *     summary: Update  appointment
+     *     tags: [Appointments]
+     *     parameters:
+     *     - in: header
+     *       name: authorization
+     *       description: Token Bearer a validar
+     *       required: true
+     *       type: string
+     *     - name: id
+     *       in: path
+     *       description: ID of the appointment to be updated
+     *       required: true
+     *       schema:
+     *         type: string
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/CreateAppointmentDTO'
+     *     responses:
+     *       200:
+     *         description: Respuesta exitosa
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   description: estado.
+     *                   example: OK
+     *                 data:
+     *                   type: string
+     *                   description: Data de la cita actualizada.
+     *                   example: {}
+     *       401:
+     *         description: Respuesta token expirado
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   description: estado.
+     *                   example: ERROR
+     *                 message:
+     *                   type: string
+     *                   description: Resultado si el token está vencido.
+     *                   example: Expired token
+     *       500:
+     *         description: Error general o de validación de token
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   description: estado.
+     *                   example: ERROR
+     *                 message:
+     *                   type: string
+     *                   description: Resultado existe un error.
+     *                   example: Failed to authenticate user
+     */
     @PutMapping('/:id', UserAccessLevel.Authenticated)
     async updated(req: Request, res: Response): Promise<void> {
         try {
@@ -146,7 +327,7 @@ export class AppointmentController {
                 res.status(401).json({ message: 'Invalid token' });
                 return;
             }
-            if(!params || !params.id || isNaN(Number(params.id))) {
+            if (!params || !params.id || isNaN(Number(params.id))) {
                 res.status(400).json({ message: 'Id is required' });
                 return;
             }
@@ -162,7 +343,11 @@ export class AppointmentController {
             if (isValidToken) {
                 res.status(200).json({
                     status: 'OK',
-                    data: await this.appointmentService.update(token, request, Number(params.id)),
+                    data: await this.appointmentService.update(
+                        token,
+                        request,
+                        Number(params.id),
+                    ),
                 });
             }
         } catch (error) {
@@ -175,7 +360,10 @@ export class AppointmentController {
             }
             res.status(500).json({
                 status: 'ERROR',
-                message: error.message ?? error?.errors[0]?.message ?? 'Internal Server Error',
+                message:
+                    error.message ??
+                    error?.errors[0]?.message ??
+                    'Internal Server Error',
             });
             console.error(error);
         }

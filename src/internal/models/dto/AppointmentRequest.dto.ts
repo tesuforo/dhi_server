@@ -41,8 +41,6 @@ export class CreateAppointmentDTO {
     @IsDefined({ message: "The 'professional_id' field is required." })
     professional_id: number;
 
-    @IsDefined({ message: "The 'box_id' field is required." })
-    box_id: number;
 
     @IsArray()
     @ArrayNotEmpty({ message: 'The list of services not empty' })
@@ -106,7 +104,6 @@ export class CreateAppointmentDTO {
         end: Date;
         client_id: number;
         professional_id: number;
-        box_id: number;
         service_id: number[];
         data_sheet: string;
         identification_type: string;
@@ -133,7 +130,6 @@ export class CreateAppointmentDTO {
             client_id,
             professional_id,
             service_id,
-            box_id,
             data_sheet,
             identification_type,
             identification,
@@ -157,7 +153,6 @@ export class CreateAppointmentDTO {
         this.end = end;
         this.client_id = client_id;
         this.professional_id = professional_id;
-        this.box_id = box_id;
         this.service_id = service_id;
         this.data_sheet = data_sheet;
         this.identification_type = identification_type;
