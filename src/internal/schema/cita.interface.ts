@@ -10,12 +10,12 @@ export interface IAppointment {
     profesional: IProfessional | number;
     services: IService[] | number[];
     comentario: string;
-    estado: EstadoCita | number;
+    estado?: EstadoCita | number;
     user_created?: string; // UUID
     date_created?: string; // Formato de fecha/hora: "YYYY-MM-DDTHH:mm:ss"
     user_updated?: string; // UUID
     date_updated?: string; // Formato de fecha/hora: "YYYY-MM-DDTHH:mm:ss"
-    estado_pago: EstadoPago | number;
+    estado_pago?: EstadoPago | number;
 }
 
 export interface CitaSalaServicio {

@@ -2,24 +2,20 @@ import {
     IsArray,
     IsString,
     IsDate,
-    IsEnum,
     ValidateNested,
     IsDefined,
     IsNumber,
 } from 'class-validator';
 import { Service } from 'typedi';
 
-export enum StatusAppointment {
-    PENDIENTE = 'Pendiente',
-    CONFIRMADA = 'Confirmada',
-    CANCELADA = 'Cancelada',
-    COMPLETADA = 'Completada',
-    DESABILITADA = 'Desabilitada',
-    REPROGRAMADA = 'Reprogramada',
-}
-
 @Service()
 export class CreateAppointmentDTO {
+    @IsNumber(
+        { allowInfinity: false, allowNaN: false },
+        { message: "The 'event_id' field must be number." },
+    )
+    event_id: number;
+
     @IsDefined({ message: "The 'title' field is required." })
     @IsString()
     title: string;
@@ -34,9 +30,9 @@ export class CreateAppointmentDTO {
 
     @IsNumber(
         { allowInfinity: false, allowNaN: false },
-        { message: "The 'start' field must be number." },
+        { message: "The 'client_id' field must be number." },
     )
-    patient_id: number;
+    client_id: number;
 
     @IsDefined({ message: "The 'professional_id' field is required." })
     professional_id: number;
@@ -46,6 +42,7 @@ export class CreateAppointmentDTO {
 
     @IsArray()
     @ValidateNested({ each: true })
+    @IsDefined({ message: "The  Array 'service_id' field is required." })
     service_id: number[];
 
     @IsString()
@@ -75,23 +72,30 @@ export class CreateAppointmentDTO {
     sent_email: boolean;
     @IsString()
     description: string;
+    @IsNumber(
+        { allowInfinity: false, allowNaN: false },
+        { message: "The 'state_id' field must be number." },
+    )
+    state_id: number;
 
-    @IsDefined({ message: "The 'status' field is required." })
-    @IsEnum(StatusAppointment)
-    status: StatusAppointment;
+    @IsNumber(
+        { allowInfinity: false, allowNaN: false },
+        { message: "The 'pay_id' field must be number." },
+    )
+    pay_id: number;
 
     constructor(params: {
+        event_id: number;
         title: string;
         start: Date;
         end: Date;
-        patient_id: number;
+        client_id: number;
         professional_id: number;
         box_id: number;
         service_id: number[];
         data_sheet: string;
         identification: string;
         first_name: string;
-
         middle_name: string;
         last_name: string;
         last_name_2: string;
@@ -102,13 +106,15 @@ export class CreateAppointmentDTO {
         email: string;
         sent_email: boolean;
         description: string;
-        status: StatusAppointment;
+        state_id: number;
+        pay_id: number;
     }) {
         const {
+            event_id,
             title,
             start,
             end,
-            patient_id,
+            client_id,
             professional_id,
             service_id,
             box_id,
@@ -125,12 +131,14 @@ export class CreateAppointmentDTO {
             email,
             sent_email,
             description,
-            status,
+            state_id,
+            pay_id,
         } = params;
+        this.event_id = event_id;
         this.title = title;
         this.start = start;
         this.end = end;
-        this.patient_id = patient_id;
+        this.client_id = client_id;
         this.professional_id = professional_id;
         this.box_id = box_id;
         this.service_id = service_id;
@@ -147,6 +155,7 @@ export class CreateAppointmentDTO {
         this.email = email;
         this.sent_email = sent_email;
         this.description = description;
-        this.status = status;
+        this.state_id = state_id;
+        this.pay_id = pay_id;
     }
 }

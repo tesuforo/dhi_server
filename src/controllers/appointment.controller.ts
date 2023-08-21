@@ -9,12 +9,13 @@ import {
 import { AppointmentService } from 'services';
 import { parseValidationErrors, validateToken } from 'utils';
 import { validate } from 'class-validator';
+import { PutMapping } from '../internal/decorators/rest/RequestMapping.decorator';
 
 @RestController('/appointment', UserAccessLevel.Public)
 export class AppointmentController {
     constructor(private appointmentService: AppointmentService) {}
 
-    @GetMapping('')
+    @GetMapping('/')
     getList(_: Request, res: Response): void {
         res.status(200).json({
             status: 'OK',
@@ -80,10 +81,14 @@ export class AppointmentController {
      *                   description: Resultado existe un error.
      *                   example: Failed to authenticate user
      */
-    @PostMapping('')
+    @PostMapping('/', UserAccessLevel.Authenticated)
     async create(req: Request, res: Response): Promise<void> {
         try {
             const { headers, body } = req;
+            if (!body) {
+                res.status(400).json({ message: 'Body is required' });
+                return;
+            }
             // remove Bearer if using Bearer Authorization mechanism
             const token = headers.authorization?.replace('Bearer ', '') ?? '';
 
@@ -116,7 +121,54 @@ export class AppointmentController {
             }
             res.status(500).json({
                 status: 'ERROR',
-                message: 'Internal Server Error',
+                message: error.message ?? 'Internal Server Error',
+            });
+        }
+    }
+
+    @PutMapping('/', UserAccessLevel.Authenticated)
+    async updated(req: Request, res: Response): Promise<void> {
+        try {
+            const { headers, body } = req;
+
+            if (!body) {
+                res.status(400).json({ message: 'Body is required' });
+                return;
+            }
+            // remove Bearer if using Bearer Authorization mechanism
+            const token = headers.authorization?.replace('Bearer ', '') ?? '';
+
+            // verify request has token
+            if (!token) {
+                res.status(401).json({ message: 'Invalid token' });
+                return;
+            }
+
+            const request = new CreateAppointmentDTO(body);
+            const dtoValidation = await validate(request);
+            if (dtoValidation && dtoValidation.length > 0) {
+                const errors = parseValidationErrors(dtoValidation);
+                res.status(400).send(errors);
+            }
+            // verify token hasn't expired yet
+            const isValidToken = await validateToken(token);
+            if (isValidToken) {
+                res.status(200).json({
+                    status: 'OK',
+                    data: await this.appointmentService.create(token, request),
+                });
+            }
+        } catch (error) {
+            if (error.name === 'TokenExpiredError') {
+                res.status(401).json({
+                    status: 'ERR_JWT_EXPIRED',
+                    message: 'Expired token',
+                });
+                return;
+            }
+            res.status(500).json({
+                status: 'ERROR',
+                message: error.message ?? 'Internal Server Error',
             });
         }
     }

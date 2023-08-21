@@ -1,5 +1,6 @@
 import {
     AppInfoController,
+    AppointmentController,
     MutantController,
     TestController,
 } from 'controllers';
@@ -19,6 +20,7 @@ const ResourceApiPrefix = '/rest';
 
 const Controllers: Class<any>[] = [
     AppInfoController,
+    AppointmentController,
     MutantController,
     TestController,
 ];

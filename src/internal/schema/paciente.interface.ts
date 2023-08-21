@@ -1,8 +1,8 @@
 export interface IPatient {
     id?: number;
-    estado: string;
+    estado?: string;
     tipo_documento?: string;
-    documento: string;
+    documento?: string;
     nombres: string;
     apellido_paterno: string;
     apellido_materno?: string;
@@ -10,7 +10,8 @@ export interface IPatient {
     genero?: string;
     correo: string;
     telefono: string;
-    registrado: boolean;
+    telefono_2?: string;
+    registrado?: boolean;
     estado_civil?: string;
     user_created?: string; // UUID
     date_created?: string; // Formato de fecha/hora: "YYYY-MM-DDTHH:mm:ss"
