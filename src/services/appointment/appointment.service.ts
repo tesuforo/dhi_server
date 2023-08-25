@@ -1,7 +1,7 @@
 import { CreateAppointmentDTO, IAppointment, IPatient } from 'internal';
 import { Service } from 'typedi';
 import * as Directus from '@directus/sdk';
-import { isDirectusError } from '@directus/errors';
+import * as DirectusError from '@directus/errors';
 
 @Service()
 export class AppointmentService {
@@ -32,7 +32,7 @@ export class AppointmentService {
                     Directus.createItem('pacientes', patient),
                 );
             } catch (error) {
-                if (isDirectusError(error)) {
+                if (DirectusError.isDirectusError(error)) {
                     throw error;
                 }
                 console.error(error);
