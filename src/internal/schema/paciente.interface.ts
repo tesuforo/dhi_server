@@ -9,7 +9,9 @@ export interface IPatient {
     fecha_nacimiento?: string; // Formato de fecha: "YYYY-MM-DD"
     genero?: string;
     correo: string;
+    indicativo: string;
     telefono: string;
+    indicativo_2: string;
     telefono_2?: string;
     registrado?: boolean;
     estado_civil?: string;
