@@ -68,10 +68,12 @@ export class CreateAppointmentDTO {
     last_name_2: string;
     phone: string;
     @IsString()
+    @IsOptional()
     phone_2: string;
     @IsString()
     dialling: string;
     @IsString()
+    @IsOptional()
     dialling_2: string;
     @IsString()
     email: string;
