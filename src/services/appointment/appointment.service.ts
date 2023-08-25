@@ -19,8 +19,10 @@ export class AppointmentService {
                 apellido_paterno: request.last_name,
                 apellido_materno: request.last_name_2,
                 correo: request.email,
-                telefono: request.dialling + request.phone,
-                telefono_2: request.dialling_2 + request.phone_2,
+                indicativo: request.dialling,
+                telefono: request.phone,
+                indicativo_2: request.dialling_2,
+                telefono_2: request.phone_2,
                 registrado: false,
             };
 
@@ -75,8 +77,10 @@ export class AppointmentService {
             apellido_paterno: request.last_name,
             apellido_materno: request.last_name_2,
             correo: request.email,
-            telefono: request.dialling + request.phone,
-            telefono_2: request.dialling_2 + request.phone_2,
+            indicativo: request.dialling,
+            telefono: request.phone,
+            indicativo_2: request.dialling_2,
+            telefono_2: request.phone_2,
         };
 
         await client.request<IPatient>(
