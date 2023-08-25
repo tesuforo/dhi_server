@@ -1,6 +1,7 @@
 import { CreateAppointmentDTO, IAppointment, IPatient } from 'internal';
 import { Service } from 'typedi';
 import * as Directus from '@directus/sdk';
+import { isDirectusError } from '@directus/errors';
 
 @Service()
 export class AppointmentService {
@@ -31,12 +32,17 @@ export class AppointmentService {
                     Directus.createItem('pacientes', patient),
                 );
             } catch (error) {
+                if (isDirectusError(error)) {
+                    throw error;
+                }
                 console.error(error);
             }
         }
 
         if (!patientCreate && !request.client_id) {
-            throw new Error('Error in create Patient required: [identification, first_name, middle_name, last_name, last_name_2, email, dialling, dialling_2, phone_2] or client_id is required');
+            throw new Error(
+                'Error in create Patient required: [identification, first_name, middle_name, last_name, last_name_2, email, dialling, dialling_2, phone_2] or client_id is required',
+            );
         }
 
         const appointment: IAppointment = {

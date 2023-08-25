@@ -362,8 +362,8 @@ export class AppointmentController {
                 status: 'ERROR',
                 message:
                     error.message ??
-                    error?.errors[0]?.message ??
-                    'Internal Server Error',
+                    error?.errors?.map((error: Error) => error.message)?.join() ??
+                    'Internal Server Error'
             });
             console.error(error);
         }

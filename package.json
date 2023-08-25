@@ -24,6 +24,7 @@
         "src": "dist"
     },
     "dependencies": {
+        "@directus/errors": "^0.0.2",
         "@directus/sdk": "^11.0.1",
         "@directus/tsconfig": "^1.0.0",
         "bson": "^5.4.0",

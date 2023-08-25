@@ -96,6 +96,7 @@ export class CreateAppointmentDTO {
     @IsOptional()
     pay_id: number;
 
+    @IsString()
     @IsOptional()
     identification_type: string;
 
