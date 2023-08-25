@@ -7,3 +7,4 @@ export * from './UnicodeUtils';
 export * from './UrlUtils';
 export * from './message';
 export * from './JWTUtils';
+export * from './ErrorDirectUSUtils';
