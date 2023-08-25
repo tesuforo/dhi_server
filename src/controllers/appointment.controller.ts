@@ -125,7 +125,7 @@ export class AppointmentController {
 
     /**
      * @swagger
-     * /rest/appointments:
+     * /rest/appointment:
      *   post:
      *     summary: Create a new appointment
      *     tags: [Appointments]
@@ -241,7 +241,7 @@ export class AppointmentController {
 
     /**
      * @swagger
-     * /rest/appointments/{id}:
+     * /rest/appointment/{id}:
      *   put:
      *     summary: Update  appointment
      *     tags: [Appointments]
