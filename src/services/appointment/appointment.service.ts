@@ -14,6 +14,7 @@ export class AppointmentService {
         let patientCreate;
         if (!request.client_id) {
             const patient: IPatient = {
+                tipo_documento: request.identification_type,
                 documento: request.identification,
                 nombres: request.first_name + ' ' + request.middle_name,
                 apellido_paterno: request.last_name,
@@ -25,14 +26,17 @@ export class AppointmentService {
                 telefono_2: request.phone_2,
                 registrado: false,
             };
-
-            patientCreate = await client.request<IPatient>(
-                Directus.createItem('pacientes', patient),
-            );
+            try {
+                patientCreate = await client.request<IPatient>(
+                    Directus.createItem('pacientes', patient),
+                );
+            } catch (error) {
+                console.error(error);
+            }
         }
 
         if (!patientCreate && !request.client_id) {
-            throw new Error('Error create Patient or Patient id is required');
+            throw new Error('Error in create Patient required: [identification, first_name, middle_name, last_name, last_name_2, email, dialling, dialling_2, phone_2] or client_id is required');
         }
 
         const appointment: IAppointment = {
@@ -46,6 +50,8 @@ export class AppointmentService {
                 salas_servicios_id: { id },
             })) as any,
             comentario: request.description,
+            estado: request.state_id,
+            estado_pago: request.pay_id,
         };
 
         const appoinmentCreate = await client.request<IAppointment>(
