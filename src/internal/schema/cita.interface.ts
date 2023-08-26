@@ -8,7 +8,7 @@ export interface IAppointment {
     fin: Date; // Formato de fecha/hora: "YYYY-MM-DDTHH:mm:ss"
     paciente?: IPatient | number;
     profesional: IProfessional | number;
-    servicios: ICitaSalaServicio;
+    servicios: ICitaSalaServicio[];
     comentario: string;
     estado?: EstadoCita | number;
     user_created?: string; // UUID
@@ -21,7 +21,7 @@ export interface IAppointment {
 export interface ICitaSalaServicio {
     id?: number | string;
     citas_id: IAppointment | number | string;
-    salas_servicios_id: ISalaServicio[] | number[];
+    salas_servicios_id: ISalaServicio | number;
 }
 
 export interface ICitaServicio {

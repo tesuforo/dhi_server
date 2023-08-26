@@ -12,7 +12,7 @@ export interface ISala {
 }
 
 export interface ISalaServicio {
-    id: number;
-    salas_id: ISala;
-    servicios_id: IService[];
+    id?: number;
+    salas_id?: ISala;
+    servicios_id?: IService[];
 }

@@ -319,14 +319,14 @@ export class AppointmentController {
                 res.status(400).json({ message: 'Body is required' });
                 return;
             }
-            // remove Bearer if using Bearer Authorization mechanism
+
             const token = headers.authorization?.replace('Bearer ', '') ?? '';
 
-            // verify request has token
             if (!token) {
                 res.status(401).json({ message: 'Invalid token' });
                 return;
             }
+
             if (!params || !params.id || isNaN(Number(params.id))) {
                 res.status(400).json({ message: 'Id is required' });
                 return;
@@ -334,20 +334,25 @@ export class AppointmentController {
 
             const request = new CreateAppointmentDTO(body);
             const dtoValidation = await validate(request);
+
             if (dtoValidation && dtoValidation.length > 0) {
                 const errors = parseValidationErrors(dtoValidation);
                 res.status(400).send(errors);
+                return;
             }
-            // verify token hasn't expired yet
+
             const isValidToken = await validateToken(token);
+
             if (isValidToken) {
+                const updatedAppointment = await this.appointmentService.update(
+                    token,
+                    request,
+                    Number(params.id),
+                );
+
                 res.status(200).json({
                     status: 'OK',
-                    data: await this.appointmentService.update(
-                        token,
-                        request,
-                        Number(params.id),
-                    ),
+                    data: updatedAppointment,
                 });
             }
         } catch (error) {
@@ -358,13 +363,17 @@ export class AppointmentController {
                 });
                 return;
             }
+
             res.status(500).json({
                 status: 'ERROR',
                 message:
                     error.message ??
-                    error?.errors?.map((error: Error) => error.message)?.join() ??
-                    'Internal Server Error'
+                    error?.errors
+                        ?.map((error: Error) => error.message)
+                        ?.join() ??
+                    'Internal Server Error',
             });
+
             console.error(error);
         }
     }

@@ -13,11 +13,12 @@ export class AppointmentService {
             .with(Directus.rest());
 
         let patientCreate;
+
         if (!request.client_id) {
             const patient: IPatient = {
                 tipo_documento: request.identification_type,
                 documento: request.identification,
-                nombres: request.first_name + ' ' + request.middle_name,
+                nombres: `${request.first_name} ${request.middle_name}`,
                 apellido_paterno: request.last_name,
                 apellido_materno: request.last_name_2,
                 correo: request.email,
@@ -27,6 +28,7 @@ export class AppointmentService {
                 telefono_2: request.phone_2,
                 registrado: false,
             };
+
             try {
                 patientCreate = await client.request<IPatient>(
                     Directus.createItem('pacientes', patient),
@@ -54,7 +56,7 @@ export class AppointmentService {
             servicios: request.service_id.map((id) => ({
                 citas_id: '+',
                 salas_servicios_id: { id },
-            })) as any,
+            })),
             comentario: request.description,
             estado: request.state_id,
             estado_pago: request.pay_id,
@@ -85,7 +87,7 @@ export class AppointmentService {
 
         const patient: IPatient = {
             tipo_documento: request.identification_type,
-            nombres: request.first_name + ' ' + request.middle_name,
+            nombres: `${request.first_name} ${request.middle_name}`,
             apellido_paterno: request.last_name,
             apellido_materno: request.last_name_2,
             correo: request.email,
@@ -107,7 +109,7 @@ export class AppointmentService {
             servicios: request.service_id.map((idService) => ({
                 citas_id: id,
                 salas_servicios_id: { id: idService },
-            })) as any,
+            })),
             comentario: request.description,
             estado: request.state_id,
             estado_pago: request.pay_id,
@@ -116,6 +118,7 @@ export class AppointmentService {
         await client.request<IAppointment>(
             Directus.updateItem('citas', id, appointment),
         );
+
         return request;
     }
 }
