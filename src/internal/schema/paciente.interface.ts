@@ -3,7 +3,8 @@ export interface IPatient {
     estado?: string;
     tipo_documento?: string;
     documento?: string;
-    nombres: string;
+    primer_nombre: string;
+    segundo_nombre?: string;
     apellido_paterno: string;
     apellido_materno?: string;
     fecha_nacimiento?: string; // Formato de fecha: "YYYY-MM-DD"

@@ -18,7 +18,8 @@ export class AppointmentService {
             const patient: IPatient = {
                 tipo_documento: request.identification_type,
                 documento: request.identification,
-                nombres: `${request.first_name} ${request.middle_name}`,
+                primer_nombre: request.first_name,
+                segundo_nombre: request.middle_name,
                 apellido_paterno: request.last_name,
                 apellido_materno: request.last_name_2,
                 correo: request.email,
@@ -87,7 +88,8 @@ export class AppointmentService {
 
         const patient: IPatient = {
             tipo_documento: request.identification_type,
-            nombres: `${request.first_name} ${request.middle_name}`,
+            primer_nombre: request.first_name,
+            segundo_nombre: request.middle_name,
             apellido_paterno: request.last_name,
             apellido_materno: request.last_name_2,
             correo: request.email,
