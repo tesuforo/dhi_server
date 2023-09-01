@@ -1,0 +1,23 @@
+name: Deployment Workflow
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH to server
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: api.dhicolombia.net
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd /home/project/dhi_server/
+            git pull
+            npm install
+            npm run build
+            systemctl restart pm2-root
