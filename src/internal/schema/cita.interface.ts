@@ -9,6 +9,7 @@ export interface IAppointment {
     paciente?: IPatient | number;
     profesional: IProfessional | number;
     servicios: ICitaSalaServicio[];
+    enviar_correo: boolean;
     comentario: string;
     estado?: EstadoCita | number;
     user_created?: string; // UUID

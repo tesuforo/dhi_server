@@ -61,6 +61,7 @@ export class AppointmentService {
             comentario: request.description,
             estado: request.state_id,
             estado_pago: request.pay_id,
+            enviar_correo: request.sent_email,
         };
 
         const appoinmentCreate = await client.request<IAppointment>(
@@ -115,6 +116,7 @@ export class AppointmentService {
             comentario: request.description,
             estado: request.state_id,
             estado_pago: request.pay_id,
+            enviar_correo: request.sent_email
         };
 
         await client.request<IAppointment>(
