@@ -11,6 +11,7 @@ export * from './types/StastResponse.type';
 export * from './types/Page.type';
 export * from './types/Pagination.type';
 export * from './models/dto/AppointmentRequest.dto'
+export * from './models/dto/BlockAppointmentRequest.dto';
 export * from './models/dto/MutantRequest.dto'
 export * from './models/vo/responseVo'
 export * from './schema/cita.interface';

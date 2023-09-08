@@ -1,4 +1,4 @@
-import { CreateAppointmentDTO, IAppointment, IPatient } from 'internal';
+import { BlockAppointmentDTO, CreateAppointmentDTO, IAppointment, IPatient } from 'internal';
 import { Service } from 'typedi';
 import * as Directus from '@directus/sdk';
 import { isDirectusError } from 'utils';
@@ -78,6 +78,40 @@ export class AppointmentService {
         };
     }
 
+    async block(token: string, request: BlockAppointmentDTO) {
+        const client = Directus.createDirectus(process.env.DIRECTUS_URI ?? '')
+            .with(Directus.staticToken(token))
+            .with(Directus.rest());
+
+
+        const appointment: IAppointment = {
+            titulo: request.title,
+            inicio: request.start,
+            fin: request.end,
+            profesional: request.professional_id,
+            servicios: request.service_id.map((id) => ({
+                citas_id: '+',
+                salas_servicios_id: { id },
+            })),
+            comentario: request.description,
+            estado: request.state_id,
+            estado_pago: request.pay_id,
+            enviar_correo: request.sent_email_profesional,
+        };
+
+        const appoinmentCreate = await client.request<IAppointment>(
+            Directus.createItem('citas', appointment),
+        );
+
+
+        return {
+            ...request,
+            event_id: appoinmentCreate.id,
+            client_id: appointment.paciente,
+            service_id: appoinmentCreate.servicios,
+        };
+    }
+
     async update(token: string, request: CreateAppointmentDTO, id: number) {
         if (!request.client_id) {
             throw new Error('Client id is required');
@@ -116,7 +150,7 @@ export class AppointmentService {
             comentario: request.description,
             estado: request.state_id,
             estado_pago: request.pay_id,
-            enviar_correo: request.sent_email
+            enviar_correo: request.sent_email,
         };
 
         await client.request<IAppointment>(
