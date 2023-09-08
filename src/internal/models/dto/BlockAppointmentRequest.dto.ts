@@ -67,7 +67,6 @@ export class BlockAppointmentDTO {
         title: string;
         start: Date;
         end: Date;
-        client_id: number;
         professional_id: number;
         service_id: number[];
         sent_email_profesional: boolean;
