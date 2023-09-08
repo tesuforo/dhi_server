@@ -14,6 +14,7 @@ export class AppointmentService {
     constructor() {}
 
     async create(token: string, request: CreateAppointmentDTO) {
+        this.validateDateStartEnd(request.start, request.end);
         const client = Directus.createDirectus(process.env.DIRECTUS_URI ?? '')
             .with(Directus.staticToken(token))
             .with(Directus.rest());
@@ -85,6 +86,7 @@ export class AppointmentService {
     }
 
     async block(token: string, request: BlockAppointmentDTO) {
+        this.validateDateStartEnd(request.start, request.end);
         const client = Directus.createDirectus(process.env.DIRECTUS_URI ?? '')
             .with(Directus.staticToken(token))
             .with(Directus.rest());
@@ -96,7 +98,7 @@ export class AppointmentService {
                 },
             }),
         );
-        if(!services || !services.length) {
+        if (!services || !services.length) {
             throw new Error('No services found Block');
         }
         const appointment: IAppointment = {
@@ -130,6 +132,8 @@ export class AppointmentService {
     }
 
     async update(token: string, request: CreateAppointmentDTO, id: number) {
+        this.validateDateStartEnd(request.start, request.end);
+
         if (!request.client_id) {
             throw new Error('Client id is required');
         }
@@ -175,5 +179,34 @@ export class AppointmentService {
         );
 
         return request;
+    }
+
+    private validateDateStartEnd(start: Date, end: Date) {
+        // Obtener la fecha actual en UTC
+        const fechaActual = new Date();
+
+        // Ajustar la fecha actual a la 1am en UTC
+        fechaActual.setUTCHours(1, 0, 0, 0);
+
+        // Convertir las cadenas de fecha en objetos Date en UTC
+        const fechaInicioUTC = new Date(start);
+        const fechaFinUTC = new Date(end);
+
+        // Validar que las cadenas de fecha sean en formato válido
+        if (isNaN(fechaInicioUTC.getTime()) || isNaN(fechaFinUTC.getTime())) {
+            throw new Error( 'Las fechas ingresadas no son válidas.')
+        }
+
+        // Validar que la fecha de inicio no sea mayor que la de fin
+        if (fechaInicioUTC >= fechaFinUTC) {
+            throw new Error( 'La fecha de inicio no puede ser mayor o igual que la fecha de fin.');
+        }
+
+        // Validar que la fecha de inicio no sea menor que la 1am del día actual en UTC
+        if (fechaInicioUTC < fechaActual) {
+            throw new Error( 'La fecha de inicio no puede ser menor que la 1am del día actual en UTC.');
+        }
+
+
     }
 }
