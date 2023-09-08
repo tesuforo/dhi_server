@@ -1,4 +1,10 @@
-import { BlockAppointmentDTO, CreateAppointmentDTO, IAppointment, IPatient } from 'internal';
+import {
+    BlockAppointmentDTO,
+    CreateAppointmentDTO,
+    IAppointment,
+    ICitaSalaServicio,
+    IPatient,
+} from 'internal';
 import { Service } from 'typedi';
 import * as Directus from '@directus/sdk';
 import { isDirectusError } from 'utils';
@@ -82,17 +88,29 @@ export class AppointmentService {
         const client = Directus.createDirectus(process.env.DIRECTUS_URI ?? '')
             .with(Directus.staticToken(token))
             .with(Directus.rest());
-
-
+        const services = await client.request<ICitaSalaServicio[]>(
+            Directus.readItems('salas_servicios', {
+                fields: ['*'],
+                filter: {
+                    salas_id: { nombre: { _eq: 'Bloqueo' } },
+                },
+            }),
+        );
+        if(!services || !services.length) {
+            throw new Error('No services found Block');
+        }
         const appointment: IAppointment = {
             titulo: request.title,
             inicio: request.start,
             fin: request.end,
             profesional: request.professional_id,
-            servicios: request.service_id.map((id) => ({
-                citas_id: '+',
-                salas_servicios_id: { id },
-            })),
+            servicios: services.map(
+                (service) =>
+                    ({
+                        citas_id: '+',
+                        salas_servicios_id: { id: service.id },
+                    }) as ICitaSalaServicio,
+            ),
             comentario: request.description,
             estado: request.state_id,
             estado_pago: request.pay_id,
@@ -102,7 +120,6 @@ export class AppointmentService {
         const appoinmentCreate = await client.request<IAppointment>(
             Directus.createItem('citas', appointment),
         );
-
 
         return {
             ...request,
