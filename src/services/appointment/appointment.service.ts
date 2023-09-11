@@ -182,7 +182,7 @@ export class AppointmentService {
         };
 
         const appoinmentCurrent = await client.request<IAppointment>(
-            Directus.readItem('citas', id),
+            Directus.readItem('citas', id, { fields: ['*', 'servicios.*'] }),
         );
 
         const updateOnlyChanges = findChanges(appoinmentCurrent, appointment);
