@@ -15,6 +15,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           port: 22
+          script_stop: true
           script: |
             cd /home/project/dhi_server/
             git pull
