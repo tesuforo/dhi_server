@@ -7,8 +7,7 @@ import {
 } from 'internal';
 import { Service } from 'typedi';
 import * as Directus from '@directus/sdk';
-import { isDirectusError } from 'utils';
-import { findChanges } from '@src/utils/misc';
+import { isDirectusError, findChanges } from 'utils';
 
 @Service()
 export class AppointmentService {
