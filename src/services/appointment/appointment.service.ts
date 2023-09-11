@@ -8,6 +8,7 @@ import {
 import { Service } from 'typedi';
 import * as Directus from '@directus/sdk';
 import { isDirectusError } from 'utils';
+import { findChanges } from '@src/utils/misc';
 
 @Service()
 export class AppointmentService {
@@ -155,9 +156,16 @@ export class AppointmentService {
             telefono_2: request.phone_2,
         };
 
-        await client.request<IPatient>(
-            Directus.updateItem('pacientes', request.client_id, patient),
+        const patientCurrent = await client.request<IPatient>(
+            Directus.readItem('pacientes', request.client_id),
         );
+
+        const updatePatientOnlyChanges = findChanges(patientCurrent, patient);
+        if (Object.keys(updatePatientOnlyChanges).length > 0) {
+            await client.request<IPatient>(
+                Directus.updateItem('pacientes', request.client_id, patient),
+            );
+        }
 
         const appointment: IAppointment = {
             titulo: request.title,
@@ -174,9 +182,16 @@ export class AppointmentService {
             enviar_correo: request.sent_email,
         };
 
-        await client.request<IAppointment>(
-            Directus.updateItem('citas', id, appointment),
+        const appoinmentCurrent = await client.request<IAppointment>(
+            Directus.readItem('citas', id),
         );
+
+        const updateOnlyChanges = findChanges(appoinmentCurrent, appointment);
+        if (Object.keys(updateOnlyChanges).length > 0) {
+            await client.request<IAppointment>(
+                Directus.updateItem('citas', id, updateOnlyChanges),
+            );
+        }
 
         return request;
     }
@@ -194,19 +209,21 @@ export class AppointmentService {
 
         // Validar que las cadenas de fecha sean en formato válido
         if (isNaN(fechaInicioUTC.getTime()) || isNaN(fechaFinUTC.getTime())) {
-            throw new Error( 'Las fechas ingresadas no son válidas.')
+            throw new Error('Las fechas ingresadas no son válidas.');
         }
 
         // Validar que la fecha de inicio no sea mayor que la de fin
         if (fechaInicioUTC >= fechaFinUTC) {
-            throw new Error( 'La fecha de inicio no puede ser mayor o igual que la fecha de fin.');
+            throw new Error(
+                'La fecha de inicio no puede ser mayor o igual que la fecha de fin.',
+            );
         }
 
         // Validar que la fecha de inicio no sea menor que la 1am del día actual en UTC
         if (fechaInicioUTC < fechaActual) {
-            throw new Error( 'La fecha de inicio no puede ser menor que la 1am del día actual en UTC.');
+            throw new Error(
+                'La fecha de inicio no puede ser menor que la 1am del día actual en UTC.',
+            );
         }
-
-
     }
 }
