@@ -186,6 +186,9 @@ export class AppointmentService {
         );
 
         const updateOnlyChanges = findChanges(appoinmentCurrent, appointment);
+        if (updateOnlyChanges.inicio || updateOnlyChanges.fin) {
+            updateOnlyChanges.enviar_correo = appoinmentCurrent.enviar_correo;
+        }
         if (Object.keys(updateOnlyChanges).length > 0) {
             await client.request<IAppointment>(
                 Directus.updateItem('citas', id, updateOnlyChanges),
