@@ -201,13 +201,20 @@ export class AppointmentService {
                 updateOnlyChanges.enviar_correo ??
                 appoinmentCurrent.enviar_correo;
         }
+        console.log(appoinmentCurrent.inicio);
+        console.log(appointment.inicio);
+        console.log(updateOnlyChanges);
         if (Object.keys(updateOnlyChanges).length > 0) {
             await client.request<IAppointment>(
                 Directus.updateItem('citas', id, updateOnlyChanges),
             );
         }
 
-        return request;
+        return {
+            ...request,
+            event_id: id,
+            correo_enviado: updateOnlyChanges.enviar_correo,
+        };
     }
 
     private validateDateStartEnd(start: Date, end: Date) {
