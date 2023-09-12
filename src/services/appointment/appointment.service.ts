@@ -23,6 +23,7 @@ export class AppointmentService {
 
         if (!request.client_id) {
             const patient: IPatient = {
+                full_name: `${request.first_name} ${request.middle_name} ${request.last_name} ${request.last_name_2}`,
                 tipo_documento: request.identification_type,
                 documento: request.identification,
                 primer_nombre: request.first_name,
@@ -143,6 +144,7 @@ export class AppointmentService {
             .with(Directus.rest());
 
         const patient: IPatient = {
+            full_name: `${request.first_name} ${request.middle_name} ${request.last_name} ${request.last_name_2}`,
             tipo_documento: request.identification_type,
             primer_nombre: request.first_name,
             segundo_nombre: request.middle_name,
@@ -160,6 +162,7 @@ export class AppointmentService {
         );
 
         const updatePatientOnlyChanges = findChanges(patientCurrent, patient);
+        console.log(updatePatientOnlyChanges);
         if (Object.keys(updatePatientOnlyChanges).length > 0) {
             await client.request<IPatient>(
                 Directus.updateItem('pacientes', request.client_id, patient),
@@ -201,8 +204,6 @@ export class AppointmentService {
                 updateOnlyChanges.enviar_correo ??
                 appoinmentCurrent.enviar_correo;
         }
-        console.log(appoinmentCurrent.inicio);
-        console.log(appointment.inicio);
         console.log(updateOnlyChanges);
         if (Object.keys(updateOnlyChanges).length > 0) {
             await client.request<IAppointment>(

@@ -3,6 +3,7 @@ export interface IPatient {
     estado?: string;
     tipo_documento?: string;
     documento?: string;
+    full_name?: string;
     primer_nombre: string;
     segundo_nombre?: string;
     apellido_paterno: string;
