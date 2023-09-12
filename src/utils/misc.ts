@@ -132,7 +132,7 @@ export function validateDateStartEnd(start: Date, end: Date) {
     if (fechaInicioUTC < fechaActual) {
         throw new DateValidatorError(
             'OLD_DATE_ERROR',
-            'La fecha de inicio no puede ser menor que la 1am del día actual en UTC.',
+            'La fecha de inicio no puede ser menor que la 1am del día actual en UTC o está intentando actualizar una cita antigua.',
         );
     }
 }
