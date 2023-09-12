@@ -483,7 +483,7 @@ export class AppointmentController {
             }
 
             res.status(500).json({
-                status: 'ERROR',
+                status:error.code ?? 'ERROR',
                 message:
                     error.message ??
                     error?.errors

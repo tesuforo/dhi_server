@@ -81,3 +81,58 @@ export function findChanges(object1: any, object2: any) {
 
     return result;
 }
+
+class DateValidatorError extends Error {
+    code: string;
+    constructor(code: string, message: string) {
+        super(message);
+        this.name = 'DateValidatorError';
+        this.code = code;
+        const actualProto = new.target.prototype;
+        if (Object.setPrototypeOf) {
+            Object.setPrototypeOf(this, actualProto);
+        } else {
+            (this as any).__proto__ = actualProto;
+        }
+    }
+
+    sayHello() {
+        return 'hello ' + this.message;
+    }
+}
+
+export function validateDateStartEnd(start: Date, end: Date) {
+    // Obtener la fecha actual en UTC
+    const fechaActual = new Date();
+
+    // Ajustar la fecha actual a la 1am en UTC
+    fechaActual.setUTCHours(1, 0, 0, 0);
+
+    // Convertir las cadenas de fecha en objetos Date en UTC
+    const fechaInicioUTC = new Date(start);
+    const fechaFinUTC = new Date(end);
+
+    // Validar que las cadenas de fecha sean en formato válido
+    if (isNaN(fechaInicioUTC.getTime()) || isNaN(fechaFinUTC.getTime())) {
+        throw new DateValidatorError(
+            'DATE_ERROR',
+            'Las fechas ingresadas no son válidas.',
+        );
+    }
+
+    // Validar que la fecha de inicio no sea mayor que la de fin
+    if (fechaInicioUTC >= fechaFinUTC) {
+        throw new DateValidatorError(
+            'START_DATE_ERROR',
+            'La fecha de inicio no puede ser mayor o igual que la fecha de fin.',
+        );
+    }
+
+    // Validar que la fecha de inicio no sea menor que la 1am del día actual en UTC
+    if (fechaInicioUTC < fechaActual) {
+        throw new DateValidatorError(
+            'OLD_DATE_ERROR',
+            'La fecha de inicio no puede ser menor que la 1am del día actual en UTC.',
+        );
+    }
+}
