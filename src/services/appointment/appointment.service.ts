@@ -182,11 +182,21 @@ export class AppointmentService {
         };
 
         const appoinmentCurrent = await client.request<IAppointment>(
-            Directus.readItem('citas', id, { fields: ['*', 'servicios.*'] }),
+            Directus.readItem('citas', id, {
+                fields: [
+                    '*',
+                    'servicios.citas_id',
+                    'servicios.salas_servicios_id.id',
+                ],
+            }),
         );
 
         const updateOnlyChanges = findChanges(appoinmentCurrent, appointment);
-        if (updateOnlyChanges.inicio || updateOnlyChanges.enviar_correo) {
+        if (
+            updateOnlyChanges.inicio ||
+            updateOnlyChanges.enviar_correo ||
+            updateOnlyChanges.servicios
+        ) {
             updateOnlyChanges.enviar_correo =
                 updateOnlyChanges.enviar_correo ??
                 appoinmentCurrent.enviar_correo;
