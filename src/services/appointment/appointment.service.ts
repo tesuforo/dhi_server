@@ -162,6 +162,7 @@ export class AppointmentService {
         );
 
         const updatePatientOnlyChanges = findChanges(patientCurrent, patient);
+        console.log(patientCurrent);
         console.log(updatePatientOnlyChanges);
         if (Object.keys(updatePatientOnlyChanges).length > 0) {
             await client.request<IPatient>(
@@ -198,7 +199,8 @@ export class AppointmentService {
         if (
             updateOnlyChanges.inicio ||
             updateOnlyChanges.enviar_correo ||
-            updateOnlyChanges.servicios
+            (updateOnlyChanges.servicios &&
+                updateOnlyChanges.servicios.length > 0)
         ) {
             updateOnlyChanges.enviar_correo =
                 updateOnlyChanges.enviar_correo ??
@@ -221,6 +223,7 @@ export class AppointmentService {
             ...request,
             event_id: id,
             update: updateOnlyChanges,
+            updatePatient: updatePatientOnlyChanges,
             correo_enviado: updateOnlyChanges.enviar_correo,
         };
     }

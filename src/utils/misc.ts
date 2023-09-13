@@ -2,6 +2,8 @@
  * Miscellaneous shared functions go here.
  */
 
+import { differenceBy, isEmpty } from 'lodash';
+
 /**
  * Get a random number between 1 and 1,000,000,000,000
  */
@@ -28,14 +30,22 @@ export function findChanges(original: any, updated: any) {
         const updatedValue = updated[key];
 
         if (isArray(originalValue) && isArray(updatedValue)) {
-            changes[key] = findArrayChanges(originalValue, updatedValue);
+            changes[key] = differenceBy(
+                updatedValue,
+                originalValue,
+                JSON.stringify,
+            );
         } else if (isObject(originalValue) && isObject(updatedValue)) {
-            changes[key] = findObjectChanges(originalValue, updatedValue);
+            const changes = findObjectChanges(originalValue, updatedValue);
+            if (!isEmpty(changes)) {
+                changes[key] = changes;
+            }
         } else if (
             isStringDateISO(originalValue) &&
             isStringDateISO(updatedValue)
         ) {
-            changes[key] = findDateChanges(originalValue, updatedValue);
+            if (findDateChanges(originalValue, updatedValue))
+                changes[key] = updatedValue;
         } else if (originalValue !== updatedValue) {
             changes[key] = updatedValue;
         }
@@ -62,7 +72,7 @@ export function isDate(value: any) {
 
 function isStringDateISO(value: any) {
     const regexDateISO =
-        /[+-]?\d{4}(-[01]\d(-[0-3]\d(T[0-2]\d:[0-5]\d:?([0-5]\d(\.\d+)?)?([+-][0-2]\d:[0-5]\d)?Z?)?)?)?/;
+        /[+-]?^\d{4}-[01]\d-[0-3]\d(((T[0-2]\d:[0-5]\d:?([0-5]\d(\.\d+)?)?([+-][0-2]\d:[0-5]\d)?Z?)?)?)?/;
     return regexDateISO.exec(value) !== null;
 }
 
@@ -126,10 +136,7 @@ function findDateChanges(original: any, updated: any) {
     const updatedDate = new Date(
         updated.includes('.000Z') ? updated : updated + '.000Z',
     );
-
-    if (originalDate.getTime() !== updatedDate.getTime()) {
-        return updated;
-    }
+    return originalDate.getTime() !== updatedDate.getTime();
 }
 
 class DateValidatorError extends Error {
