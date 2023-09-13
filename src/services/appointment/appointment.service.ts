@@ -205,6 +205,12 @@ export class AppointmentService {
                 appoinmentCurrent.enviar_correo;
         }
         console.log(updateOnlyChanges);
+        if (
+            updateOnlyChanges.servicios &&
+            updateOnlyChanges.servicios.length === 0
+        ) {
+            delete updateOnlyChanges.servicios;
+        }
         if (Object.keys(updateOnlyChanges).length > 0) {
             await client.request<IAppointment>(
                 Directus.updateItem('citas', id, updateOnlyChanges),
@@ -214,9 +220,8 @@ export class AppointmentService {
         return {
             ...request,
             event_id: id,
+            update: updateOnlyChanges,
             correo_enviado: updateOnlyChanges.enviar_correo,
         };
     }
-
-    
 }

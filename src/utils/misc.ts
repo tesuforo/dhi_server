@@ -20,66 +20,116 @@ export function tick(milliseconds: number): Promise<void> {
     });
 }
 
-export function findChanges(object1: any, object2: any) {
-    const result = {} as any;
+export function findChanges(original: any, updated: any) {
+    const changes = {} as any;
 
-    for (const key in object1) {
-        if (Array.isArray(object1[key]) && Array.isArray(object2[key])) {
-            for (let i = 0; i < object1[key].length; i++) {
-                if (
-                    (typeof object1[key][i] === 'object' &&
-                        typeof object2[key][i] === 'object' &&
-                        Object.entries(object1[key][i]).toString() !==
-                            Object.entries(object2[key][i]).toString()) ||
-                    (typeof object1[key][i] !== 'object' &&
-                        typeof object2[key][i] !== 'object' &&
-                        object1[key][i] !== object2[key][i])
-                ) {
-                    result[key][i] = object2[key][i];
-                }
-            }
+    for (const key in updated) {
+        const originalValue = original[key];
+        const updatedValue = updated[key];
+
+        if (isArray(originalValue) && isArray(updatedValue)) {
+            changes[key] = findArrayChanges(originalValue, updatedValue);
+        } else if (isObject(originalValue) && isObject(updatedValue)) {
+            changes[key] = findObjectChanges(originalValue, updatedValue);
         } else if (
-            (object1.hasOwnProperty(key) &&
-                object2.hasOwnProperty(key) &&
-                typeof object1[key] !== 'object' &&
-                typeof object2[key] !== 'object' &&
-                object1[key] !== object2[key]) ||
-            (typeof object1[key] === 'object' &&
-                typeof object2[key] === 'object' &&
-                Object.entries(object1[key]).toString() !==
-                    Object.entries(object2[key]).toString())
+            isStringDateISO(originalValue) &&
+            isStringDateISO(updatedValue)
         ) {
-            const regexDateIso =
-                /[+-]?\d{4}(-[01]\d(-[0-3]\d(T[0-2]\d:[0-5]\d:?([0-5]\d(\.\d+)?)?([+-][0-2]\d:[0-5]\d)?Z?)?)?)?/;
-            if (
-                typeof object1[key] === 'string' &&
-                typeof object2[key] === 'string' &&
-                regexDateIso.test(object1[key]) &&
-                regexDateIso.test(object2[key])
-            ) {
-                const date1 = new Date(
-                    object1[key].includes('.000Z')
-                        ? object1[key]
-                        : object1[key] + '.000Z',
-                );
-                const date2 = new Date(
-                    object2[key].includes('.000Z')
-                        ? object2[key]
-                        : object2[key] + '.000Z',
-                );
-                if (
-                    date1.toString() !== 'Invalid Date' &&
-                    date2.toString() !== 'Invalid Date' &&
-                    date1.getTime() !== date2.getTime()
-                )
-                    result[key] = object2[key];
-            } else if (object1[key] !== object2[key]) {
-                result[key] = object2[key];
-            }
+            changes[key] = findDateChanges(originalValue, updatedValue);
+        } else if (originalValue !== updatedValue) {
+            changes[key] = updatedValue;
         }
     }
 
-    return result;
+    return changes;
+}
+
+function isArray(value: any) {
+    return Array.isArray(value);
+}
+
+function isObject(value: any) {
+    return value && typeof value === 'object';
+}
+
+function isUndefined(value: any) {
+    return typeof value === 'undefined';
+}
+
+export function isDate(value: any) {
+    return value instanceof Date;
+}
+
+function isStringDateISO(value: any) {
+    const regexDateISO =
+        /[+-]?\d{4}(-[01]\d(-[0-3]\d(T[0-2]\d:[0-5]\d:?([0-5]\d(\.\d+)?)?([+-][0-2]\d:[0-5]\d)?Z?)?)?)?/;
+    return regexDateISO.exec(value) !== null;
+}
+
+function findArrayChanges(original: any, updated: any) {
+    const changes = [];
+
+    for (let i = 0; i < updated.length; i++) {
+        if (!updated[i]) continue;
+
+        if (
+            (isObject(original[i]) || isUndefined(original[i])) &&
+            isObject(updated[i]) &&
+            JSON.stringify(original[i] ?? {}) !== JSON.stringify(updated[i])
+        ) {
+            changes.push(updated[i]);
+        } else if (
+            !isObject(original[i]) &&
+            !isObject(updated[i]) &&
+            original[i] !== updated[i]
+        ) {
+            changes.push(updated[i]);
+        }
+    }
+
+    return changes;
+}
+
+function findObjectChanges(original: any, updated: any) {
+    const changes = {} as any;
+
+    for (const key in updated) {
+        if (!original.hasOwnProperty(key)) continue;
+
+        const originalValue = original[key];
+        const updatedValue = updated[key];
+
+        if (isArray(originalValue) && isArray(updatedValue)) {
+            changes[key] = findArrayChanges(originalValue, updatedValue);
+        } else if (
+            isObject(originalValue) &&
+            isObject(updatedValue) &&
+            JSON.stringify(originalValue) !== JSON.stringify(updatedValue)
+        ) {
+            changes[key] = updatedValue;
+        } else if (
+            !isObject(originalValue) &&
+            !isObject(updatedValue) &&
+            originalValue !== updatedValue
+        ) {
+            changes[key] = updatedValue;
+        }
+    }
+
+    return changes;
+}
+
+function findDateChanges(original: any, updated: any) {
+    const originalDate = new Date(
+        original.includes('.000Z') ? original : original + '.000Z',
+    );
+    const updatedDate = new Date(
+        updated.includes('.000Z') ? updated : updated + '.000Z',
+    );
+
+    if (originalDate.getTime() !== updatedDate.getTime()) {
+        return updated;
+    }
 }
 
 class DateValidatorError extends Error {
