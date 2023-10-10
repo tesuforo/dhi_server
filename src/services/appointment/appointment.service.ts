@@ -226,6 +226,7 @@ export class AppointmentService {
             update: updateOnlyChanges,
             updatePatient: updatePatientOnlyChanges,
             correo_enviado: updateOnlyChanges.enviar_correo,
+            data_sheet: patientCurrent.ficha_id,
         };
     }
 }
