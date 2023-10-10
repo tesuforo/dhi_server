@@ -17,10 +17,16 @@ export interface IPatient {
     telefono_2?: string;
     registrado?: boolean;
     estado_civil?: string;
+    ficha_id?: number | IFichas;
     user_created?: string; // UUID
     date_created?: string; // Formato de fecha/hora: "YYYY-MM-DDTHH:mm:ss"
     user_updated?: string; // UUID
     date_updated?: string; // Formato de fecha/hora: "YYYY-MM-DDTHH:mm:ss"
+}
+
+export interface IFichas{
+    id?: number;
+    estado: string;
 }
 
 export interface IPatientFile {
