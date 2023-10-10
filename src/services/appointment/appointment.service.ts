@@ -81,6 +81,7 @@ export class AppointmentService {
 
         return {
             ...request,
+            data_sheet: patientCreate.ficha_id,
             event_id: appoinmentCreate.id,
             client_id: appointment.paciente,
             service_id: appoinmentCreate.servicios,
