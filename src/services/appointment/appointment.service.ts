@@ -74,7 +74,9 @@ export class AppointmentService {
         };
 
         const appoinmentCreate = await client.request<IAppointment>(
-            Directus.createItem('citas', appointment),
+            Directus.createItem('citas', appointment, {
+                fields: ['*', 'paciente.*'],
+            }),
         );
 
         patientCreate = appoinmentCreate.paciente as IPatient;
@@ -145,6 +147,10 @@ export class AppointmentService {
             .with(Directus.staticToken(token))
             .with(Directus.rest());
 
+        const patientCurrent = await client.request<IPatient>(
+            Directus.readItem('pacientes', request.client_id),
+        );
+
         const patient: IPatient = {
             full_name: `${request.first_name} ${request.middle_name} ${request.last_name} ${request.last_name_2}`,
             tipo_documento: request.identification_type,
@@ -157,11 +163,8 @@ export class AppointmentService {
             telefono: request.phone,
             indicativo_2: request.dialling_2,
             telefono_2: request.phone_2,
+            ficha_id: patientCurrent.ficha_id ?? { estado: 'published' },
         };
-
-        const patientCurrent = await client.request<IPatient>(
-            Directus.readItem('pacientes', request.client_id),
-        );
 
         const updatePatientOnlyChanges = findChanges(patientCurrent, patient);
         console.log(updatePatientOnlyChanges);
