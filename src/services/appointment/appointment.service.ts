@@ -37,6 +37,7 @@ export class AppointmentService {
                 telefono_2: request.phone_2,
                 registrado: false,
                 ficha_id: { estado: 'published' },
+                datos_extra: request.data_extra,
             };
 
             try {
@@ -164,6 +165,7 @@ export class AppointmentService {
             indicativo_2: request.dialling_2,
             telefono_2: request.phone_2,
             ficha_id: patientCurrent.ficha_id ?? { estado: 'published' },
+            datos_extra: request.data_extra,
         };
 
         const updatePatientOnlyChanges = findChanges(patientCurrent, patient);

@@ -41,10 +41,9 @@ export class CreateAppointmentDTO {
     @IsDefined({ message: "The 'professional_id' field is required." })
     professional_id: number;
 
-
     @IsArray()
     @ArrayNotEmpty({ message: 'The list of services not empty' })
-    @IsNumber({},{each: true})
+    @IsNumber({}, { each: true })
     @IsDefined({
         message: "The  Array 'service_id' field is required.",
     })
@@ -100,6 +99,9 @@ export class CreateAppointmentDTO {
     @IsOptional()
     identification_type: string;
 
+    @IsOptional()
+    data_extra: any;
+
     constructor(params: {
         event_id: number;
         title: string;
@@ -124,6 +126,7 @@ export class CreateAppointmentDTO {
         description: string;
         state_id: number;
         pay_id: number;
+        data_extra: any;
     }) {
         const {
             event_id,
@@ -149,6 +152,7 @@ export class CreateAppointmentDTO {
             description,
             state_id,
             pay_id,
+            data_extra,
         } = params;
         this.event_id = event_id;
         this.title = title;
@@ -173,5 +177,6 @@ export class CreateAppointmentDTO {
         this.description = description;
         this.state_id = state_id;
         this.pay_id = pay_id;
+        this.data_extra = data_extra;
     }
 }

@@ -18,6 +18,7 @@ export interface IPatient {
     registrado?: boolean;
     estado_civil?: string;
     ficha_id?: number | IFichas;
+    datos_extra?: any;
     user_created?: string; // UUID
     date_created?: string; // Formato de fecha/hora: "YYYY-MM-DDTHH:mm:ss"
     user_updated?: string; // UUID
