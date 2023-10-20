@@ -152,6 +152,10 @@ export class AppointmentService {
             Directus.readItem('pacientes', request.client_id),
         );
 
+        if(patientCurrent.datos_extra && !request.data_extra){
+            throw new Error('data_extra is required');
+        } 
+
         const patient: IPatient = {
             full_name: `${request.first_name} ${request.middle_name} ${request.last_name} ${request.last_name_2}`,
             tipo_documento: request.identification_type,
